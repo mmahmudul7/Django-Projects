@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Document</title>
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+</head>
+<body>
+    <p class="lal-bg">Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, error?</p>
+
+    <img src="{% static "/images/nature.jpeg" %}" alt="nature" srcset="">
+
+    <hr>
+
+    {{ names }} <br>
+    {{ ages }}
+
+    <p class="lal-bg">{{ ages }}</p>
+
+    {% for name in names %}
+        <li>{{ name }}</li>
+    {% endfor %}
+    
+    <hr>
+
+    {% for name in names %}
+        {% if not name == "Hasan" %}
+            <li>{{ name }}</li>
+        {% endif %}
+    {% endfor %}
+
+    <hr>
+
+    {{ count }}
+
+
+</body>
+</html>

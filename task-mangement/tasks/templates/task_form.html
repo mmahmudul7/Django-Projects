@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <link rel="stylesheet" href="{% static "css/output.css" %}">
+</head>
+<body>
+    {% comment %} <form action="#" method="GET">
+        <label for="">Title</label>
+        <input type="text" name="title">
+        <label for="">Number</label>
+        <input type="number" name="number">
+        <button type="sumbit">Sumbit</button>
+    </form> {% endcomment %}
+
+    <div class="w-1/2 mx-auto mt-8">
+        <div>
+            {% if message %}
+                <p>{{ message }}</p>
+            {% endif %}
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% comment %} <label for="">Title</label>
+            <input type="text" name="title">
+            <label for="">Number</label>
+            <input type="number" name="number"> {% endcomment %}
+            <button type="sumbit" class="bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Sumbit</button>
+        </form>
+    </div>
+</body>
+</html>

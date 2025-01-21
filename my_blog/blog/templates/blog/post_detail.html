@@ -1,0 +1,12 @@
+<!-- templates/blog/post_detail.html -->
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <article class="card">
+        <div class="card-body">
+            <h1>{{ post.title }}</h1>
+            <p class="text-muted">By {{ post.author }} on {{ post.date_posted|date:"F d, Y" }}</p>
+            <p>{{ post.content }}</p>
+        </div>
+    </article>
+{% endblock %}
