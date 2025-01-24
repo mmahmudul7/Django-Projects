@@ -9,28 +9,19 @@
     <link rel="stylesheet" href="{% static "css/output.css" %}">
 </head>
 <body>
-    {% comment %} <form action="#" method="GET">
-        <label for="">Title</label>
-        <input type="text" name="title">
-        <label for="">Number</label>
-        <input type="number" name="number">
-        <button type="sumbit">Sumbit</button>
-    </form> {% endcomment %}
-
     <div class="w-1/2 mx-auto mt-8">
         <div>
-            {% if message %}
-                <p>{{ message }}</p>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="px-2 py-1 {% if message.tags == 'success' %}bg-green-500 text-white{% endif %}">{{ message }}</div>
+                {% endfor %}
             {% endif %}
         </div>
 
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
-            {% comment %} <label for="">Title</label>
-            <input type="text" name="title">
-            <label for="">Number</label>
-            <input type="number" name="number"> {% endcomment %}
+            {{ task_form }}
+            {{ task_detail_form }}
             <button type="sumbit" class="bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Sumbit</button>
         </form>
     </div>

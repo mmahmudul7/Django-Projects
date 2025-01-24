@@ -1,41 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from tasks.forms import TaskForm, TaskModelForm
+from tasks.forms import TaskForm, TaskModelForm, TaskDetailModelForm
 from tasks.models import Employee, Task, TaskDetail, Project
 from datetime import date
 from django.db.models import Q, Count, Max, Min, Avg, Sum
-
-# Work with DataBase
-# Transform Data
-# Data Pass
-# HTTP Response / JSON Response
-
-# Create your views here.
-# def home(request):
-#     return HttpResponse("Welcome to the task management system")
+from django.contrib import messages
 
 def manager_dashboard(request):
-    ''' getting task count ''' 
-    # total_task = tasks.count()
-    # completed_task = Task.objects.filter(status = "COMPLETED").count()
-    # in_progress_task = Task.objects.filter(status = "IN_PROGRESS").count()
-    # pending_task = Task.objects.filter(status = "PENDING").count()
-
-    # count = {
-    #     'total_task': ,
-    #     'completed_task': ,
-    #     'in_progress_task': ,
-    #     'pending_task': ,
-    # }
-
-    # context = {
-    #     'tasks': tasks,
-    #     'total_task': total_task,
-    #     'completed_task': completed_task,
-    #     'in_progress_task': in_progress_task,
-    #     'pending_task': pending_task,
-    # }
-
     type = request.GET.get('type', 'all')
 
     counts = Task.objects.aggregate(
@@ -61,18 +32,16 @@ def manager_dashboard(request):
         'tasks': tasks,
         'counts': counts,
     }
-
     return render(request, "dashboard/manager-dashboard.html", context)
+
+# CURD 
+# C = CREATE 
+# R = READ 
+# U = UPDATE 
+# D = DELETE 
 
 def user_dashboard(request):
     return render(request, "dashboard/user-dashboard.html")
-
-# def test(request):
-#     context = {
-#         "names": {"Mahmud", "Hasan", "Shamim", "Mr. X"},
-#         "ages": {23, 25, 27},
-#     }
-#     return render(request, "test.html", context)
 
 def test(request):
     names = ["Mahmud", "Hasan", "Shamim", "Mr. X"]
@@ -89,39 +58,23 @@ def test(request):
 
 def create_task(request):
     # employees = Employee.objects.all()
-    form = TaskModelForm() # For GET. By default GET method thake, tay GET bola lagbe na
+    task_form = TaskModelForm() # For GET. By default GET method thake, tay GET bola lagbe na
+    task_detail_form = TaskDetailModelForm()
 
     if request.method == "POST": # For POST method.
-        form = TaskModelForm(request.POST)
-        if form.is_valid():
+        task_form = TaskModelForm(request.POST)
+        task_detail_form = TaskDetailModelForm(request.POST)
+        if task_form.is_valid() and task_detail_form.is_valid():
             """ For Model Form Data """
-            form.save()
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task = task
+            task_detail.save()
 
-            return render(request, 'task_form.html', {"form": form, "message": "task added successfully"})
-
-            # For Django Form Data 
-            '''
-            data = form.cleaned_data
-            title = data.get("title")
-            description = data.get("description")
-            due_date = data.get("due_date")
-            assigned_to = data.get("assigned_to") # list [1, 3]
-
-            task = Task.objects.create(
-                title = title,
-                description = description,
-                due_date = due_date
-            )
-
-            # Assign employee to tasks 
-            for emp_id in assigned_to:
-                employee = Employee.objects.get(id = emp_id)
-                task.assigned_to.add(employee)
-
-            return HttpResponse("Task Added Successfully.")
-            '''
-
-    context = { "form": form }
+            messages.success(request, "Task Created Successfully")
+            return redirect('create-task')
+        
+    context = { "task_form": task_form, "task_detail_form": task_detail_form }
     return render(request, "task_form.html", context)
 
 # def view_task(request):
