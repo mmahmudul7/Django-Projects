@@ -13,7 +13,7 @@
         <div>
             {% if messages %}
                 {% for message in messages %}
-                    <div class="px-2 py-1 {% if message.tags == 'success' %}bg-green-500 text-white{% endif %}">{{ message }}</div>
+                    <div class="px-2 py-1 mb-4 {% if message.tags == 'success' %}bg-green-500 text-white{% endif %}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
         </div>

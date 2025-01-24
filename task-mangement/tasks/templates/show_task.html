@@ -6,11 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    {% comment %} <div>
-        {{ tasks }}
-    </div> {% endcomment %}
-
-
     <div>
         <ol>
             {% for project in projects %}
@@ -21,23 +16,5 @@
             {% endfor %}
         </ol>
     </div>
-
-    {% comment %} <div>
-        <ol>
-            {% for task in tasks %}
-                <li>{{task.title}}</li>
-                <span>{{task.status}}</span>
-            {% endfor %}
-        </ol>
-    </div> {% endcomment %}
-{% comment %} 
-    <div>
-        <span>Third Task: </span> {{ task3 }}
-    </div>
-
-    <div>
-        <span>First Task: </span> {{ first_task }}
-    </div> {% endcomment %}
-
 </body>
 </html>
