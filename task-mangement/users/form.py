@@ -22,13 +22,44 @@ class CustomRegistrationsForm(forms.ModelForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'password1', 'confirm_password', 'email']
 
-        def clean_password1(self):
-            password1 = self.cleaned_data.get('password1')
+    # def clean_password1(self): # field error
+    #     password1 = self.cleaned_data.get('password1')
+    #     errors = []
 
-            if len(password1) < 8:
-                raise forms.ValidationError(
-                    'Password must be at least 8 character long'
-                )
-            
-            if re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', password1):
-                'Password must include Uppercase, lowercase, number & special character @#$%^&+ only'
+    #     if len(password1) < 8:
+    #         errors.append('Password must be at least 8 characters long.')
+        
+    #     if "abc" not in password1:
+    #         errors.append("Password must include 'abc'.")
+
+    #     if errors:
+    #         raise forms.ValidationError(errors)
+
+    #     return password1
+    
+
+    def clean(self):  # Non-field validation
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        confirm_password = cleaned_data.get('confirm_password')
+
+        errors = []
+
+        # Check password length
+        if password1 and len(password1) < 8:
+            errors.append('Password must be at least 8 characters long.')
+
+        # Check for "abc" in the password
+        if password1 and "abc" not in password1:
+            errors.append("Password must include 'abc'.")
+
+        # Check if passwords match
+        if password1 and confirm_password and password1 != confirm_password:
+            errors.append('Passwords do not match.')
+
+        # If there are any errors, raise them as non-field errors
+        if errors:
+            raise forms.ValidationError(errors)
+
+        return cleaned_data
+    
