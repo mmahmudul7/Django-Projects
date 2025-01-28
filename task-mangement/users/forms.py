@@ -2,6 +2,7 @@ from django import forms
 import re
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from tasks.forms import StyledFormMixin
 
 class RegisterForm(UserCreationForm):
     class Meta:
@@ -14,7 +15,7 @@ class RegisterForm(UserCreationForm):
         for fieldname in ['username', 'password1', 'password2']:
             self.fields[fieldname].help_text = None
 
-class CustomRegistrationsForm(forms.ModelForm):
+class CustomRegistrationsForm(StyledFormMixin, forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)
     confirm_password = forms.CharField(widget=forms.PasswordInput)
 
@@ -22,21 +23,30 @@ class CustomRegistrationsForm(forms.ModelForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'password1', 'confirm_password', 'email']
 
-    # def clean_password1(self): # field error
-    #     password1 = self.cleaned_data.get('password1')
-    #     errors = []
 
-    #     if len(password1) < 8:
-    #         errors.append('Password must be at least 8 characters long.')
-        
-    #     if "abc" not in password1:
-    #         errors.append("Password must include 'abc'.")
-
-    #     if errors:
-    #         raise forms.ValidationError(errors)
-
-    #     return password1
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        email_exists = User.objects.filter(email=email).exists()
+        if email_exists:
+            raise forms.ValidationError("This email is already registered. Please use a different email.")
+        return email
     
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+
+        # Regular expressions for password validation
+        if not re.search(r'[A-Z]', password1):
+            raise forms.ValidationError("Password must contain at least one uppercase letter.")
+        if not re.search(r'[a-z]', password1):
+            raise forms.ValidationError("Password must contain at least one lowercase letter.")
+        if not re.search(r'\d', password1):
+            raise forms.ValidationError("Password must contain at least one digit.")
+        if not re.search(r'[@$!%*?&]', password1):
+            raise forms.ValidationError("Password must contain at least one special character (@, $, !, %, *, ?, &).")
+        if len(password1) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters long.")
+        
+        return password1
 
     def clean(self):  # Non-field validation
         cleaned_data = super().clean()
@@ -44,14 +54,6 @@ class CustomRegistrationsForm(forms.ModelForm):
         confirm_password = cleaned_data.get('confirm_password')
 
         errors = []
-
-        # Check password length
-        if password1 and len(password1) < 8:
-            errors.append('Password must be at least 8 characters long.')
-
-        # Check for "abc" in the password
-        if password1 and "abc" not in password1:
-            errors.append("Password must include 'abc'.")
 
         # Check if passwords match
         if password1 and confirm_password and password1 != confirm_password:
