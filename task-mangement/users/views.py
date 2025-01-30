@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect
 from users.forms import CustomRegistrationsForm
-from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
+from django.contrib import messages
 
 # Create your views here.
 def sign_up(request):
     form = CustomRegistrationsForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         user = form.save(commit=False)
-        user.is_active = True
+        print('user', user)
+        user.set_password(form.cleaned_data.get('password'))
+        print(form.cleaned_data)
+        user.is_active = False
         user.save()
         print(f"User {user.username} created and is active.")
         print(request.session)
-        messages.success(request, "Registration Successful!")
+        messages.success(request, "A Confirmation mail sent. Please check your email.")
         # form = CustomRegistrationsForm()
         return redirect('sign-in')
     elif request.method == 'POST' and not form.is_valid():
