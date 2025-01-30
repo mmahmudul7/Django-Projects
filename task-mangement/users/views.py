@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from users.forms import CustomRegistrationsForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
+from users.forms import LoginForm
 
 # Create your views here.
 def sign_up(request):
@@ -9,7 +10,7 @@ def sign_up(request):
     if request.method == 'POST' and form.is_valid():
         user = form.save(commit=False)
         print('user', user)
-        user.set_password(form.cleaned_data.get('password'))
+        user.set_password(form.cleaned_data.get('password1'))
         print(form.cleaned_data)
         user.is_active = False
         user.save()
@@ -26,24 +27,15 @@ def sign_up(request):
 
 
 def sign_in(request):
+    form = LoginForm()
     if request.method == 'POST':
-        # print(request.POST)
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        # print("Doc", username, password)
-        user = authenticate(request, username=username, password=password)
-        # print(user)
-        print(request.session)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return redirect('home')
-            else:
-                messages.error(request, "Your account is inactive. Please contact admin.")
-        else:
-            messages.error(request, "Invalid username or password. Please try again.")
-    
-    return render(request, 'registration/login.html')
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+            
+    return render(request, 'registration/login.html', {'form': form})
 
 
 def sign_out(request):
