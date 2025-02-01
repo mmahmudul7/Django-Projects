@@ -58,3 +58,20 @@ def activate_user(request, user_id, token):
             return HttpResponse('The link has expired!')
     except User.DoesNotExist:
         return HttpResponse('User not found.')
+
+
+"""
+    Admin
+        - Can all kind of task
+
+    Manager
+        - project
+        - task Create
+
+    Employee
+        - Task read  
+        - Task update
+
+
+    Role Based Access Control (RBAC)
+"""
