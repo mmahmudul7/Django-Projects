@@ -58,6 +58,10 @@ def activate_user(request, user_id, token):
             return HttpResponse('The link has expired!')
     except User.DoesNotExist:
         return HttpResponse('User not found.')
+    
+
+def admin_dashboard(request):
+    return render(request, 'admin/dashboard.html')
 
 
 """
