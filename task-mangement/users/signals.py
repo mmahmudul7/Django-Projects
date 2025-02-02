@@ -10,22 +10,18 @@ from django.core.mail import send_mail
 def send_activation_email(sender, instance, created, **kwargs):
     if created:
         token = default_token_generator.make_token(instance)
-        activation_url = f"{settings.FRONTEND_URL}/users/activate/{instance.id}/{token}/"
+        activation_url = f"{
+            settings.FRONTEND_URL}/users/activate/{instance.id}/{token}/"
 
         subject = 'Activate Your Account'
-        message = f'Hi {instance.username}, \n\nPlease activate your account by clicking the link below:\n{activation_url}\n\nThank You!'
+        message = f'Hi {instance.username},\n\nPlease activate your account by clicking the link below:\n{activation_url}\n\nThank You!'
         recipient_list = [instance.email]
 
         try:
-            send_mail(
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                recipient_list
-            )
-        except Exception as error:
-            print(f"Fail to send email to {instance.email}: {str(error)}")
-
+            send_mail(subject, message,
+                      settings.EMAIL_HOST_USER, recipient_list)
+        except Exception as e:
+            print(f"Failed to send email to {instance.email}: {str(e)}")
 
 @receiver(post_save, sender=User)
 def assign_role(sender, instance, created, **kwargs):
