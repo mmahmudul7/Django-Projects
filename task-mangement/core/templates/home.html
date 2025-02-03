@@ -1,53 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>TaskMaster - Efficient Task Management</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
+{% extends "base.html" %}
+{% block content %}
 
-    <body class="font-sans bg-gray-100">
-        <header class="bg-white shadow-md">
-            <!-- Navbar -->
-            <nav class="container mx-auto px-6 py-3">
-                <div class="flex justify-between items-center">
-                    <div class="text-xl font-bold text-gray-800">TaskMaster</div>
-                    
-                    <div class="hidden md:flex space-x-4">
-                        <a href="#" class="text-gray-600 hover:text-gray-800">Feature</a>
-                        <a href="#" class="text-gray-600 hover:text-gray-800">Pricing</a>
-                        <a href="#" class="text-gray-600 hover:text-gray-800">About</a>
-                        <a href="#" class="text-gray-600 hover:text-gray-800">Contact</a>
-                    </div>
-
-                    <div class="md:hidden">
-                        <button id="menu-toggle" class="text-gray-600 hover:text-gray-800 focus:outline-none">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="hidden md:flex space-x-3">
-                        <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">Sign In</a>
-                        <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">Sign Up</a>
-                    </div>
-                </div>
-
-                <div id="mobile-menu" class="md:hidden hidden mt-4">
-                    <a href="#" class="block py-2 text-gray-600 hover:text-gray-800">Feature</a>
-                    <a href="#" class="block py-2 text-gray-600 hover:text-gray-800">Pricing</a>
-                    <a href="#" class="block py-2 text-gray-600 hover:text-gray-800">About</a>
-                    <a href="#" class="block py-2 text-gray-600 hover:text-gray-800">Contact</a>
-                    <a href="#" class="block py-2 text-gray-600 hover:text-gray-800">Sign In</a>
-                    <a href="#" class="block py-2 text-gray-600 hover:text-gray-800">Sign Up</a>
-                </div>
-            </nav>
-        </header>
-
-        <main>
-            <!-- Hero Section -->
+<!-- Hero Section -->
             <section class="bg-blue-600 text-white py-32 md:py-40">
                 <div class="container mx-auto px-6 text-center">
                     <h1 class="text-4xl md:text-5xl font-bold mb-6">Streamline Your Workflow with TaskMaster</h1>
@@ -106,56 +60,4 @@
                     <a href="#" class="bg-blue-500 text-white px-8 py-4 rounded-md font-semibold text-lg hover:bg-blue-600 transition duration-300">Start Free Trial</a>
                 </div>
             </section>
-
-        </main>
-
-        <footer class="bg-gray-800 text-white py-12">
-            <div class="container mx-auto px-6">
-                <div class="flex flex-wrap justify-between">
-
-                    <div class="w-full md:w-1/4 mb-8 md:mb-0">
-                        <h3 class="text-lg font-semibold mb-4">TaskMaster</h3>
-                        <p class="text-gray-400">Empowering teams with efficient task management solutions.</p>
-                    </div>
-                    <div class="w-full md:w-1/4 mb-8 md:mb-0">
-                        <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-                        <ul class="text-gray-400 space-y-2">
-                            <li><a href="#" class="hover:text-white"></a>Home</li>
-                            <li><a href="#" class="hover:text-white"></a>Features</li>
-                            <li><a href="#" class="hover:text-white"></a>Pricing</li>
-                            <li><a href="#" class="hover:text-white"></a>Contact</li>
-                        </ul>
-                    </div>
-                    <div class="w-full md:w-1/4 mb-8 md:mb-0">
-                        <h4 class="text-lg font-semibold mb-4">Connect</h4>
-                        <ul class="text-gray-400 space-y-2">
-                            <li><a href="#" class="hover:text-white"></a>Twitter</li>
-                            <li><a href="#" class="hover:text-white"></a>LinkedIn</li>
-                            <li><a href="#" class="hover:text-white"></a>Facebook</li>
-                        </ul>
-                    </div>
-                    <div class="w-full md:w-1/4">
-                        <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
-                        <form action="#" class="flex">
-                            <input type="email" placeholder="Your email" required class="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded-l-md focus:outline-none">
-                            <button type="submit" class="bg-blue-500 text-white px-2 py-2 rounded-r-md hover:bg-blue-600 transition duration-300">Subscribe</button>
-                        </form>
-                    </div>
-
-                </div>
-
-                <div class="border-t border-gray-700 mt-12 pt-8 text-sm text-center text-gray-400">
-                    &copy; 2025 TaskMaster. All rights reserved.
-                </div>
-
-            </div>
-        </footer>
-            <script>
-                document
-                    .getElementById("menu-toggle")
-                    .addEventListener("click", function () {
-                    document.getElementById("mobile-menu").classList.toggle("hidden");
-                });
-            </script>
-    </body>
-</html>
+{% endblock content %}
