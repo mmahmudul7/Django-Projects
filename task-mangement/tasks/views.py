@@ -116,57 +116,6 @@ def delete_task(request, id):
         messages.error(request, 'Something went wrong!')
         return redirect('manager-dashboard')
 
-# def view_task(request):
-#     # retrive all data from tasks model 
-#     tasks = Task.objects.all()
-
-#     # retrive a specific task 
-#     task_3 = Task.objects.get(id=3)
-
-#     # Fetch the first task 
-#     first_task = Task.objects.first()
-#     return render(request, "show_task.html", {"tasks": tasks, "task3": task_3, "first_task": first_task})
-
-# def view_task(request):
-#     ''' Show the tasks that are Pending '''
-#     # tasks = Task.objects.filter(status="PENDING")
-
-#     ''' Show the task which due date is today '''
-#     # tasks = Task.objects.filter(due_date = date.today())
-
-#     ''' Show the task whose priority is not Low '''
-#     # tasks = TaskDetail.objects.exclude(priority='L')
-
-#     ''' Show the task that contain word "paper" '''
-#     # tasks = Task.objects.filter(title__contains = "paper")
-
-#     ''' Show the task that contain letter capital "C" and status is "Pending" '''
-#     # tasks = Task.objects.filter(title__contains = "C", status = "PENDING")
-
-#     ''' Show the task which are status is "Pending" or "in-progress" '''
-#     # tasks = Task.objects.filter(Q(status = "PENDING") | Q(status = "IN_PROGRESS"))
-
-#     ''' Se kokhono error dibe na '''
-#     # tasks = Task.objects.filter(status = "Not Existing")
-
-#     ''' Return boolean value '''
-#     # tasks = Task.objects.filter(status = "Not Existing").exists() # False
-#     tasks = Task.objects.filter(status = "PENDING").exists() # True
-#     return render(request, "show_task.html", {"tasks": tasks})
-
-# def view_task(request):
-#     ''' select_related (ForeignKey, OneToOneField)  '''
-#     # tasks = Task.objects.select_related('details').all()
-#     # tasks = TaskDetail.objects.select_related('task').all()
-#     # tasks = Task.objects.select_related('details').all()
-
-#     ''' prefetch_related (reverse ForeignKey) '''
-#     # tasks = Project.object.all()
-
-#     ''' prefetch_related (manyToMany) '''
-#     tasks = Task.objects.prefetch_related("assigned_to").all()
-#     return render(request, "show_task.html", {"tasks": tasks})
-
 
 @login_required
 @permission_required("tasks.view_task", login_url="no-permission")
@@ -174,3 +123,10 @@ def view_task(request):
     # task_count = Task.objects.aggregate(num_task = Count('id'))
     projects = Project.objects.annotate(num_task=Count('task')).order_by('num_task')
     return render(request, "show_task.html", {"projects": projects})
+
+
+@login_required
+@permission_required("tasks.view_task", login_url="no-permission")
+def task_details(request, task_id):
+    task = Task.objects.get(id=task_id)
+    return render(request, 'task_details.html', {"task": task})

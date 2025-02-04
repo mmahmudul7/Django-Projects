@@ -27,7 +27,7 @@
                                 {% comment %} green bullet   {% endcomment %}
                             </div>
                             <div>
-                                <span>{{ task.title }}</span>
+                                <a href="{% url 'task-details' task.id %}">{{ task.title }}</a>
                                 <a href="{% url 'update-task' task.id %}" class="px-2 py-1 bg-yellow-500 text-white rounded-md">Edit</a>
                                 
                                 <form action="{% url 'delete-task' task.id %}" method="post">
