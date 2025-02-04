@@ -6,13 +6,13 @@ from django.contrib.auth.models import User
 # 3. Many to Many 
 # task = onek gula employee akta task korse
 # akta employee = onek gula task er jonno assign ase 
-class Employee(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    # tasks
+# class Employee(models.Model):
+#     name = models.CharField(max_length=100)
+#     email = models.EmailField(unique=True)
+#     # tasks
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
 
 class Task(models.Model):
     STATUS_CHOICES = [

@@ -1,14 +1,5 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
     <div class="w-1/2 mx-auto mt-8">
         <div>
             {% if messages %}
@@ -25,5 +16,4 @@
             <button type="sumbit" class="bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Sumbit</button>
         </form>
     </div>
-</body>
-</html>
+{% endblock content %}
