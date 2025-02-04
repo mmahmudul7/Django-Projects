@@ -25,7 +25,6 @@ class Task(models.Model):
         on_delete=models.DO_NOTHING,
         default=1
     )
-    # assigned_to = models.ManyToManyField(Employee, related_name='tasks')
     assigned_to = models.ManyToManyField(User, related_name='tasks')
     title = models.CharField(max_length=250)
     description = models.TextField()
