@@ -52,7 +52,7 @@ class TaskDetail(models.Model):
         on_delete=models.CASCADE,
         related_name='details'
     )
-    asset = models.ImageField(upload_to='tasks_asset', blank=True, null=True)
+    asset = models.ImageField(upload_to='tasks_asset', blank=True, null=True, default='tasks_asset/no_img.png')
     priority = models.CharField(
         max_length=1,
         choices=PRIORITY_OPTIONS,
