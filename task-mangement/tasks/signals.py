@@ -8,7 +8,6 @@ from tasks.models import Task
 def notify_employees_on_task_creation(sender, instance, action, **kwargs):
     if action == 'post_add':
         assigned_emails = [emp.email for emp in instance.assigned_to.all()]
-        print("Checking...", assigned_emails)
 
         send_mail(
             "New Task Assigned",
