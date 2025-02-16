@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from tasks.forms import TaskForm, TaskModelForm, TaskDetailModelForm
 from tasks.models import Task, TaskDetail, Project
@@ -10,9 +10,6 @@ from users.views import is_admin
 from django.views import View
 from django.utils.decorators import method_decorator
 
-
-# variable for list of decorators 
-decorators = [login_required, permission_required("tasks.add_task", login_url="no-permission")]
 
 # Class based View Re-use example 
 class Greetings(View):
@@ -34,7 +31,7 @@ def is_manager(user):
     return user.groups.filter(name='Manager').exists()
 
 def is_employee(user):
-    return user.groups.filter(name='Manager').exists()
+    return user.groups.filter(name='Employee').exists()
 
 @user_passes_test(is_manager, login_url='no-permission')
 def manager_dashboard(request):
@@ -95,7 +92,13 @@ def create_task(request):
     return render(request, "task_form.html", context)
 
 
-@method_decorator(decorators, name="dispatch")
+# variable for list of decorators 
+create_decorators = [
+    login_required,
+    permission_required("tasks.add_task", login_url="no-permission")
+]
+
+@method_decorator(create_decorators, name="dispatch")
 class CreateTask(View):
     """ For creating task """
 
@@ -149,6 +152,46 @@ def update_task(request, id):
         
     context = { "task_form": task_form, "task_detail_form": task_detail_form }
     return render(request, "task_form.html", context)
+
+
+
+update_decorators = [
+    login_required,
+    permission_required("tasks.change_task", login_url="no-permission")
+]
+
+@method_decorator(update_decorators, name="dispatch")
+class UpdateTask(View):
+    def get(self, request, *args, **kwargs):
+        task = get_object_or_404(Task, id=kwargs["id"])
+        task_form = TaskModelForm(instance=task)
+        task_detail_form = None
+        if hasattr(task, "details"):  
+            task_detail_form = TaskDetailModelForm(instance=task.details)
+
+        context = {"task_form": task_form, "task_detail_form": task_detail_form}
+        return render(request, "task_form.html", context)
+
+
+    def post(self, request, *args, **kwargs):
+        task = get_object_or_404(Task, id=kwargs["id"])
+        task_form = TaskModelForm(request.POST, instance=task)
+        task_detail_form = TaskDetailModelForm(request.POST, instance=task.details) if hasattr(task, "details") else None
+
+        if task_form.is_valid() and (task_detail_form is None or task_detail_form.is_valid()):
+            task = task_form.save()
+            if task_detail_form:
+                task_detail = task_detail_form.save(commit=False)
+                task_detail.task = task
+                task_detail.save()
+
+            messages.success(request, "Task Updated Successfully")
+            return redirect('update-task', id=task.id)
+
+        return render(request, "task_form.html", {
+            "task_form": task_form,
+            "task_detail_form": task_detail_form
+        })
 
 
 @login_required
