@@ -8,7 +8,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 from users.views import is_admin
 from django.views import View
+from django.utils.decorators import method_decorator
 
+
+# variable for list of decorators 
+decorators = [login_required, permission_required("tasks.add_task", login_url="no-permission")]
 
 # Class based View Re-use example 
 class Greetings(View):
@@ -62,11 +66,6 @@ def manager_dashboard(request):
     }
     return render(request, "dashboard/manager-dashboard.html", context)
 
-# CURD 
-# C = CREATE 
-# R = READ 
-# U = UPDATE 
-# D = DELETE 
 
 @user_passes_test(is_employee)
 def employee_dashboard(request):
@@ -94,6 +93,35 @@ def create_task(request):
         
     context = { "task_form": task_form, "task_detail_form": task_detail_form }
     return render(request, "task_form.html", context)
+
+
+@method_decorator(decorators, name="dispatch")
+class CreateTask(View):
+    """ For creating task """
+
+    template_name = "task_form.html"
+
+    def get(self, request, *args, **kwargs):
+        task_form = TaskModelForm()
+        task_detail_form = TaskDetailModelForm()
+
+        context = { "task_form": task_form, "task_detail_form": task_detail_form }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        task_form = TaskModelForm(request.POST)
+        task_detail_form = TaskDetailModelForm(request.POST, request.FILES)
+
+        if task_form.is_valid() and task_detail_form.is_valid():
+
+            """ For Model Form Data """
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task = task
+            task_detail.save()
+
+            messages.success(request, "Task Created Successfully")
+            return redirect('create-task')
 
 
 @login_required
