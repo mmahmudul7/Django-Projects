@@ -101,7 +101,7 @@ create_decorators = [
     permission_required("tasks.add_task", login_url="no-permission")
 ]
 
-class CreateTask(LoginRequiredMixin, PermissionRequiredMixin, View):
+class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
     """ For creating task """
     permission_required = 'tasks.add_task'
     login_url = 'sign-in'
@@ -113,11 +113,16 @@ class CreateTask(LoginRequiredMixin, PermissionRequiredMixin, View):
     2. PermissionRequiredMixin
     """
 
-    def get(self, request, *args, **kwargs):
-        task_form = TaskModelForm()
-        task_detail_form = TaskDetailModelForm()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['task_form'] = kwargs.get('task_form', TaskModelForm())
+        context['task_details_form'] = kwargs.get(
+            'task_details_form', TaskDetailModelForm()
+        )
+        return context
 
-        context = { "task_form": task_form, "task_detail_form": task_detail_form }
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -134,6 +139,12 @@ class CreateTask(LoginRequiredMixin, PermissionRequiredMixin, View):
 
             messages.success(request, "Task Created Successfully")
             return redirect('create-task')
+            
+        context = self.get_context_data(
+            task_form = task_form,
+            task_detail_form = task_detail_form
+        )
+        return render(request, self.template_name, context)
 
 
 @login_required
