@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from tasks.forms import TaskForm, TaskModelForm, TaskDetailModelForm
-from tasks.models import Task, TaskDetail, Project
-from datetime import date
-from django.db.models import Q, Count, Max, Min, Avg, Sum
+from tasks.forms import TaskModelForm, TaskDetailModelForm
+from tasks.models import Task, Project
+from django.db.models import Q, Count
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 from users.views import is_admin
@@ -12,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.base import ContextMixin
+from django.views.generic import ListView
 
 
 # Class based View Re-use example 
@@ -233,6 +233,24 @@ def view_task(request):
     # task_count = Task.objects.aggregate(num_task = Count('id'))
     projects = Project.objects.annotate(num_task=Count('task')).order_by('num_task')
     return render(request, "show_task.html", {"projects": projects})
+
+
+view_project_decorator = [login_required, permission_required(
+    "projects.view_project",
+    login_url='no-permission'
+)]
+
+@method_decorator(view_project_decorator, name='dispatch')
+class ViewProject(ListView):
+    model = Project
+    context_object_name = 'projects'
+    template_name = 'show_task.html'
+
+    def get_queryset(self):
+        querset = Project.objects.annotate(
+            num_task = Count('task')).order_by('num_task')
+        return querset
+    
 
 
 @login_required
