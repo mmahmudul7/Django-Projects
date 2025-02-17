@@ -104,8 +104,14 @@ create_decorators = [
 class CreateTask(LoginRequiredMixin, PermissionRequiredMixin, View):
     """ For creating task """
     permission_required = 'tasks.add_task'
-    login_url = 'no-permission'
+    login_url = 'sign-in'
     template_name = "task_form.html"
+
+    """
+    0. Create Task
+    1. LoginRequiredMixin
+    2. PermissionRequiredMixin
+    """
 
     def get(self, request, *args, **kwargs):
         task_form = TaskModelForm()
