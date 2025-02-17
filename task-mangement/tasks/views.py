@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import user_passes_test, login_required, per
 from users.views import is_admin
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic.base import ContextMixin
 
 
 # Class based View Re-use example 
@@ -98,10 +101,10 @@ create_decorators = [
     permission_required("tasks.add_task", login_url="no-permission")
 ]
 
-@method_decorator(create_decorators, name="dispatch")
-class CreateTask(View):
+class CreateTask(LoginRequiredMixin, PermissionRequiredMixin, View):
     """ For creating task """
-
+    permission_required = 'tasks.add_task'
+    login_url = 'no-permission'
     template_name = "task_form.html"
 
     def get(self, request, *args, **kwargs):
