@@ -46,6 +46,14 @@ def sign_in(request):
     return render(request, 'registration/login.html', {'form': form})
 
 
+class CustomLoginView(LoginView):
+    form_class = LoginForm
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next')
+        return next_url if next_url else super().get_success_url()
+
+
 @login_required
 def sign_out(request):
     if request.method == 'POST':
