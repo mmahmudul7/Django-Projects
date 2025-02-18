@@ -7,6 +7,7 @@ from users.forms import LoginForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Prefetch
+from django.contrib.auth.views import LoginView
 
 
 # Create your views here.
