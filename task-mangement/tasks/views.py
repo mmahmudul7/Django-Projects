@@ -224,7 +224,7 @@ class UpdateTask(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['task_form'] = self.get_form()
-        print(context)
+        # print(context)
         if hasattr(self.object, 'details') and self.object.details:
             context['task_detail_form'] = TaskDetailModelForm(
                 instance=self.object.details)
