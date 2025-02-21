@@ -139,12 +139,12 @@ class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View
 
             messages.success(request, "Task Created Successfully")
             return redirect('create-task')
-            
-        context = self.get_context_data(
-            task_form = task_form,
-            task_detail_form = task_detail_form
-        )
-        return render(request, self.template_name, context)
+        else:
+            context = self.get_context_data(
+                task_form = task_form,
+                task_detail_form = task_detail_form
+            )
+            return render(request, self.template_name, context)
 
 
 @login_required
