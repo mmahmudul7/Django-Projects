@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 from tasks.forms import TaskModelForm, TaskDetailModelForm
 from tasks.models import Task, Project
 from django.db.models import Q, Count
@@ -14,57 +13,52 @@ from django.views.generic.base import ContextMixin
 from django.views.generic import ListView, DetailView, UpdateView
 
 
-# Class based View Re-use example 
-class Greetings(View):
-    greetings = 'Hello Everyone'
-
-    def get(self, request):
-        return HttpResponse(self.greetings)
-    
-
-class HiGreetings(Greetings):
-    greetings = 'Hi Everyone'
-
-
-class HiHowGreetings(Greetings):
-    greetings = 'Hi Everyone, How are you?'
-
-
 def is_manager(user):
     return user.groups.filter(name='Manager').exists()
 
 def is_employee(user):
     return user.groups.filter(name='Employee').exists()
 
-@user_passes_test(is_manager, login_url='no-permission')
-def manager_dashboard(request):
-    type = request.GET.get('type', 'all')
 
-    counts = Task.objects.aggregate(
-        total = Count('id'),
-        completed = Count('id', filter = Q(status = 'COMPLETED')),
-        in_progress = Count('id', filter = Q(status = 'IN_PROGRESS')),
-        pending = Count('id', filter = Q(status = 'PENDING')),
-    )
+# Manager Decorator 
+manager_dashboard_decorators = [
+    login_required(login_url='no-permission'),
+    permission_required('tasks.view_task', login_url='no-permission'),
+]
 
-    # Retriving task data 
-    base_query = Task.objects.select_related('details').prefetch_related('assigned_to')
+@method_decorator(manager_dashboard_decorators, name='dispatch')
+class ManagerDashboard(View):
+    template_name = 'dashboard/manager-dashboard.html'
 
-    if type == 'completed':
-        tasks = base_query.filter(status = 'COMPLETED')
-    elif type == 'in-progress':
-        tasks = base_query.filter(status = 'IN_PROGRESS')
-    elif type == 'pending':
-        tasks = base_query.filter(status = 'PENDING')
-    elif type == 'all':
-        tasks = base_query.all()
+    def get(self, request, *args, **kwargs):
+        type = request.GET.get('type', 'all')
 
-    context = {
-        'tasks': tasks,
-        'counts': counts,
-        'role': 'manager',
-    }
-    return render(request, "dashboard/manager-dashboard.html", context)
+        counts = Task.objects.aggregate(
+            total = Count('id'),
+            completed = Count('id', filter = Q(status = 'COMPLETED')),
+            in_progress = Count('id', filter = Q(status = 'IN_PROGRESS')),
+            pending = Count('id', filter = Q(status = 'PENDING')),
+        )
+
+        # Retriving task data 
+        base_query = Task.objects.select_related('details').prefetch_related('assigned_to')
+
+        if type == 'completed':
+            tasks = base_query.filter(status = 'COMPLETED')
+        elif type == 'in-progress':
+            tasks = base_query.filter(status = 'IN_PROGRESS')
+        elif type == 'pending':
+            tasks = base_query.filter(status = 'PENDING')
+        elif type == 'all':
+            tasks = base_query.all()
+
+        context = {
+            'tasks': tasks,
+            'counts': counts,
+            'role': 'manager',
+        }
+
+        return render(request, self.template_name, context)
 
 
 @user_passes_test(is_employee)
@@ -264,14 +258,6 @@ def delete_task(request, id):
     else:
         messages.error(request, 'Something went wrong!')
         return redirect('manager-dashboard')
-
-
-@login_required
-@permission_required("tasks.view_task", login_url="no-permission")
-def view_task(request):
-    # task_count = Task.objects.aggregate(num_task = Count('id'))
-    projects = Project.objects.annotate(num_task=Count('task')).order_by('num_task')
-    return render(request, "show_task.html", {"projects": projects})
 
 
 view_project_decorator = [login_required, permission_required(
