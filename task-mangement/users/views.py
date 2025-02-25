@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Prefetch
 from django.contrib.auth.decorators import user_passes_test
-from django.views.generic import TemplateView, UpdateView, FormView
+from django.views.generic import TemplateView, UpdateView, FormView, ListView
 from users.forms import LoginForm, CustomRegistrationForm, AssignRoleForm, CreateGroupForm, CustomPasswordChangeForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm, EditProfileForm
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView
 from django.urls import reverse_lazy
@@ -153,21 +153,18 @@ class CreateGroup(View):
         return render(request, self.template_name, {'form': form})
 
 
+# Group List View
+@method_decorator(admin_dashboard_decorators, name='dispatch')
+class GroupList(ListView):
+    model = Group
+    template_name = 'admin/group_list.html'
+    context_object_name = 'groups'
+
+    def get_queryset(self):
+        return Group.objects.prefetch_related('permissions').all()
+
+
 # FBV
-@user_passes_test(is_admin, login_url='no-permission')
-def create_group(request):
-    form = CreateGroupForm()
-    if request.method == 'POST':
-        form = CreateGroupForm(request.POST)
-
-        if form.is_valid():
-            group = form.save()
-            messages.success(request, f"Group {group.name} has been created successfully")
-            return redirect('create-group')
-
-    return render(request, 'admin/create_group.html', {'form': form})
-
-
 @user_passes_test(is_admin, login_url='no-permission')
 def group_list(request):
     groups = Group.objects.prefetch_related('permissions').all()
