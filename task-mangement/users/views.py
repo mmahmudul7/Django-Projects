@@ -9,7 +9,7 @@ from users.forms import LoginForm, CustomRegistrationForm, AssignRoleForm, Creat
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
-
+from django.utils.decorators import method_decorator
 
 # Test for users
 def is_admin(user):
@@ -52,24 +52,6 @@ class SignUp(FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-def sign_up(request):
-    form = CustomRegistrationForm()
-    if request.method == 'POST':
-        form = CustomRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data.get('password1'))
-            user.is_active = False
-            user.save()
-            messages.success(
-                request, 'A Confirmation mail sent. Please check your email')
-            return redirect('sign-in')
-
-        else:
-            print("Form is not valid")
-    return render(request, 'registration/register.html', {"form": form})
-
-
 # Login
 class CustomLoginView(LoginView):
     form_class = LoginForm
@@ -88,6 +70,7 @@ class ChangePassword(PasswordChangeView):
 # Sign out "from django.contrib.auth.views import LogoutView" in url
 
 
+# FBV
 def activate_user(request, user_id, token):
     try:
         user = User.objects.get(id=user_id)
@@ -100,6 +83,28 @@ def activate_user(request, user_id, token):
 
     except User.DoesNotExist:
         return HttpResponse('User not found')
+
+
+# Admin Dashboard View
+admin_dashboard_decorators = [
+    user_passes_test(is_admin, login_url='no-permission'),
+]
+
+@method_decorator(admin_dashboard_decorators, name='dispatch')
+class AdminDashboard(TemplateView):
+    template_name = 'admin/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        users = User.objects.prefetch_related(
+            Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
+        ).all()
+
+        for user in users:
+            user.group_name = user.all_groups[0].name if user.all_groups else 'No Group Assigned'
+
+        context["users"] = users
+        return context
 
 
 @user_passes_test(is_admin, login_url='no-permission')
