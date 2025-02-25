@@ -207,9 +207,11 @@ class UpdateTask(UpdateView):
         return redirect('update-task', self.object.id)
 
 
+# Delete Task 
 @login_required
 @permission_required("tasks.delete_task", login_url="no-permission")
 def delete_task(request, id):
+    print(id)
     if request.method == 'POST':
         task = Task.objects.get(id=id)
         task.delete()
@@ -220,6 +222,7 @@ def delete_task(request, id):
         return redirect('manager-dashboard')
 
 
+# Show Tasks 
 view_project_decorator = [login_required, permission_required(
     "projects.view_project",
     login_url='no-permission'
@@ -237,6 +240,7 @@ class ViewProject(ListView):
         return querset
 
 
+# Task Details 
 class TaskDetails(DetailView):
     model = Task
     template_name = 'task_details.html'
