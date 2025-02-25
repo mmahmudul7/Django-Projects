@@ -208,16 +208,21 @@ class UpdateTask(UpdateView):
 
 
 # Delete Task 
-@login_required
-@permission_required("tasks.delete_task", login_url="no-permission")
-def delete_task(request, id):
-    print(id)
-    if request.method == 'POST':
-        task = Task.objects.get(id=id)
+delete_decorators = [
+    login_required,
+    permission_required("tasks.delete_task", login_url="no-permission")
+]
+
+@method_decorator(delete_decorators, name='dispatch')
+class DeleteTask(View):
+
+    def post(self, request, id, *args, **kwargs):
+        task = get_object_or_404(Task, id=id)
         task.delete()
         messages.success(request, 'Task Deleted Successfully')
         return redirect('manager-dashboard')
-    else:
+
+    def get(self, request, id, *args, **kwargs):
         messages.error(request, 'Something went wrong!')
         return redirect('manager-dashboard')
 
