@@ -55,6 +55,7 @@ class ManagerDashboard(View):
             'tasks': tasks,
             'counts': counts,
             'role': 'manager',
+            'profile_image': self.request.user.profile_image,
         }
 
         return render(request, self.template_name, context)
@@ -99,6 +100,7 @@ class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View
         context['task_details_form'] = kwargs.get(
             'task_details_form', TaskDetailModelForm()
         )
+        context['profile_image'] = self.request.user.profile_image
         return context
 
     def get(self, request, *args, **kwargs):
@@ -142,7 +144,7 @@ class UpdateTaskView(View):
         if hasattr(task, "details"):  
             task_details_form = TaskDetailModelForm(instance=task.details)
 
-        context = {"task_form": task_form, "task_details_form": task_details_form}
+        context = {"task_form": task_form, "task_details_form": task_details_form, 'profile_image': self.request.user.profile_image}
         return render(request, "task_form.html", context)
 
 
@@ -163,7 +165,8 @@ class UpdateTaskView(View):
 
         return render(request, "task_form.html", {
             "task_form": task_form,
-            "task_details_form": task_details_form
+            "task_details_form": task_details_form,
+            'profile_image': self.request.user.profile_image
         })
 
 
@@ -185,6 +188,7 @@ class UpdateTask(UpdateView):
         else:
             context['task_details_form'] = TaskDetailModelForm()
 
+        context['profile_image'] = self.request.user.profile_image
         return context
 
     def post(self, request, *args, **kwargs):
@@ -255,6 +259,7 @@ class TaskDetails(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs) # {"task": task}
         context['status_choices'] = Task.STATUS_CHOICES # {"task": task, 'status_choices': status_choices}
+        context['profile_image'] = self.request.user.profile_image
         return context
     
     def post(self, request, *args, **kwargs):

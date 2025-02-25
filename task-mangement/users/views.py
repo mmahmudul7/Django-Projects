@@ -98,6 +98,7 @@ class AdminDashboard(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['profile_image'] = self.request.user.profile_image
         users = User.objects.prefetch_related(
             Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
         ).all()
@@ -117,7 +118,7 @@ class AssignRole(View):
     def get(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
         form = AssignRoleForm()
-        return render(request, self.template_name, {"form": form, "user": user})
+        return render(request, self.template_name, {"form": form, "user": user, 'profile_image': self.request.user.profile_image})
 
     def post(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
@@ -130,7 +131,7 @@ class AssignRole(View):
             messages.success(request, f"User {user.username} has been assigned to the {role.name} role")
             return redirect('admin-dashboard')
 
-        return render(request, self.template_name, {"form": form, "user": user})
+        return render(request, self.template_name, {"form": form, "user": user, 'profile_image': self.request.user.profile_image})
 
 
 # Create Group View
@@ -140,7 +141,7 @@ class CreateGroup(View):
 
     def get(self, request):
         form = CreateGroupForm()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'profile_image': self.request.user.profile_image})
 
     def post(self, request):
         form = CreateGroupForm(request.POST)
@@ -150,7 +151,7 @@ class CreateGroup(View):
             messages.success(request, f"Group {group.name} has been created successfully")
             return redirect('create-group')
 
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'profile_image': self.request.user.profile_image})
 
 
 # Group List View
@@ -162,13 +163,6 @@ class GroupList(ListView):
 
     def get_queryset(self):
         return Group.objects.prefetch_related('permissions').all()
-
-
-# FBV
-@user_passes_test(is_admin, login_url='no-permission')
-def group_list(request):
-    groups = Group.objects.prefetch_related('permissions').all()
-    return render(request, 'admin/group_list.html', {'groups': groups})
 
 
 # Profile View
@@ -202,7 +196,8 @@ class CustomPasswordResetView(PasswordResetView):
         context = super().get_context_data(**kwargs)
         context['protocol'] = 'https' if self.request.is_secure() else 'http'
         context['domain'] = self.request.get_host()
-        print(context)
+        context['profile_image'] = self.request.user.profile_image
+        # print(context)
         return context
 
     def form_valid(self, form):
