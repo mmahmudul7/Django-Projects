@@ -127,6 +127,7 @@ class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View
             return render(request, self.template_name, context)
 
 
+# Update Task 
 update_decorators = [
     login_required,
     permission_required("tasks.change_task", login_url="no-permission")
@@ -139,21 +140,21 @@ class UpdateTaskView(View):
         task_form = TaskModelForm(instance=task)
         task_detail_form = None
         if hasattr(task, "details"):  
-            task_detail_form = TaskDetailModelForm(instance=task.details)
+            task_details_form = TaskDetailModelForm(instance=task.details)
 
-        context = {"task_form": task_form, "task_detail_form": task_detail_form}
+        context = {"task_form": task_form, "task_details_form": task_details_form}
         return render(request, "task_form.html", context)
 
 
     def post(self, request, *args, **kwargs):
         task = get_object_or_404(Task, id=kwargs["id"])
         task_form = TaskModelForm(request.POST, instance=task)
-        task_detail_form = TaskDetailModelForm(request.POST, instance=task.details) if hasattr(task, "details") else None
+        task_details_form = TaskDetailModelForm(request.POST, instance=task.details) if hasattr(task, "details") else None
 
-        if task_form.is_valid() and (task_detail_form is None or task_detail_form.is_valid()):
+        if task_form.is_valid() and (task_details_form is None or task_details_form.is_valid()):
             task = task_form.save()
-            if task_detail_form:
-                task_detail = task_detail_form.save(commit=False)
+            if task_details_form:
+                task_detail = task_details_form.save(commit=False)
                 task_detail.task = task
                 task_detail.save()
 
@@ -162,10 +163,12 @@ class UpdateTaskView(View):
 
         return render(request, "task_form.html", {
             "task_form": task_form,
-            "task_detail_form": task_detail_form
+            "task_details_form": task_details_form
         })
 
 
+# Use this class 
+@method_decorator(update_decorators, name="dispatch")
 class UpdateTask(UpdateView):
     model = Task
     form_class = TaskModelForm
@@ -176,12 +179,11 @@ class UpdateTask(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['task_form'] = self.get_form()
-        # print(context)
         if hasattr(self.object, 'details') and self.object.details:
-            context['task_detail_form'] = TaskDetailModelForm(
+            context['task_details_form'] = TaskDetailModelForm(
                 instance=self.object.details)
         else:
-            context['task_detail_form'] = TaskDetailModelForm()
+            context['task_details_form'] = TaskDetailModelForm()
 
         return context
 
@@ -189,16 +191,16 @@ class UpdateTask(UpdateView):
         self.object = self.get_object()
         task_form = TaskModelForm(request.POST, instance=self.object)
 
-        task_detail_form = TaskDetailModelForm(
+        task_details_form = TaskDetailModelForm(
             request.POST, request.FILES, instance=getattr(self.object, 'details', None))
 
-        if task_form.is_valid() and task_detail_form.is_valid():
+        if task_form.is_valid() and task_details_form.is_valid():
 
             """ For Model Form Data """
             task = task_form.save()
-            task_detail = task_detail_form.save(commit=False)
-            task_detail.task = task
-            task_detail.save()
+            task_details = task_details_form.save(commit=False)
+            task_details.task = task
+            task_details.save()
 
             messages.success(request, "Task Updated Successfully")
             return redirect('update-task', self.object.id)
