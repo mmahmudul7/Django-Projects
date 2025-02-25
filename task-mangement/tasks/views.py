@@ -7,10 +7,9 @@ from django.contrib.auth.decorators import user_passes_test, login_required, per
 from users.views import is_admin
 from django.views import View
 from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.views.generic.base import ContextMixin
-from django.views.generic import ListView, DetailView, UpdateView
+from django.views.generic import ListView, DetailView, UpdateView, TemplateView
 
 
 def is_manager(user):
@@ -61,40 +60,24 @@ class ManagerDashboard(View):
         return render(request, self.template_name, context)
 
 
-@user_passes_test(is_employee)
-def employee_dashboard(request):
-    return render(request, "dashboard/user-dashboard.html")
+# Employee dashboard 
+class EmployeeDashboard(UserPassesTestMixin, TemplateView):
+    template_name = "dashboard/user-dashboard.html"
 
-# @login_required
-# @permission_required("tasks.add_task", login_url="no-permission")
-# def create_task(request):
-#     # employees = Employee.objects.all()
-#     task_form = TaskModelForm() # For GET. By default GET method thake, tay GET bola lagbe na
-#     task_detail_form = TaskDetailModelForm()
+    def test_func(self):
+        return self.request.user.groups.filter(name='Employee').exists()
 
-#     if request.method == "POST": # For POST method.
-#         task_form = TaskModelForm(request.POST)
-#         task_detail_form = TaskDetailModelForm(request.POST, request.FILES)
-#         if task_form.is_valid() and task_detail_form.is_valid():
-#             """ For Model Form Data """
-#             task = task_form.save()
-#             task_detail = task_detail_form.save(commit=False)
-#             task_detail.task = task
-#             task_detail.save()
-
-#             messages.success(request, "Task Created Successfully")
-#             return redirect('create-task')
-        
-#     context = { "task_form": task_form, "task_detail_form": task_detail_form }
-#     return render(request, "task_form.html", context)
+    def handle_no_permission(self):
+        return render(self.request, 'no-permission.html')
 
 
-# variable for list of decorators 
+# Create Task 
 create_decorators = [
     login_required,
     permission_required("tasks.add_task", login_url="no-permission")
 ]
 
+@method_decorator(create_decorators, name='dispatch')
 class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
     """ For creating task """
     permission_required = 'tasks.add_task'
@@ -139,34 +122,6 @@ class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View
                 task_detail_form = task_detail_form
             )
             return render(request, self.template_name, context)
-
-
-# @login_required
-# @permission_required("tasks.change_task", login_url="no-permission")
-# def update_task(request, id):
-#     task = Task.objects.get(id=id)
-#     # employees = Employee.objects.all()
-#     task_form = TaskModelForm(instance=task) # For GET. By default GET method thake, tay GET bola lagbe na
-
-#     if task.details:
-#         task_detail_form = TaskDetailModelForm(instance=task.details)
-
-#     if request.method == "POST": # For POST method.
-#         task_form = TaskModelForm(request.POST, instance=task)
-#         task_detail_form = TaskDetailModelForm(request.POST, instance=task.details)
-#         if task_form.is_valid() and task_detail_form.is_valid():
-#             """ For Model Form Data """
-#             task = task_form.save()
-#             task_detail = task_detail_form.save(commit=False)
-#             task_detail.task = task
-#             task_detail.save()
-
-#             messages.success(request, "Task Updated Successfully")
-#             return redirect('update-task', id)
-        
-#     context = { "task_form": task_form, "task_detail_form": task_detail_form }
-#     return render(request, "task_form.html", context)
-
 
 
 update_decorators = [
@@ -275,21 +230,6 @@ class ViewProject(ListView):
         querset = Project.objects.annotate(
             num_task = Count('task')).order_by('num_task')
         return querset
-    
-
-# @login_required
-# @permission_required("tasks.view_task", login_url="no-permission")
-# def task_details(request, task_id):
-#     task = Task.objects.get(id=task_id)
-#     status_choices = Task.STATUS_CHOICES
-
-#     if request.method == 'POST':
-#         selected_status = request.POST.get('task_status')
-#         task.status = selected_status
-#         task.save()
-#         return redirect('task-details', task.id)
-
-#     return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
 
 
 class TaskDetails(DetailView):
@@ -320,4 +260,4 @@ def dashboard(request):
     if is_admin(request.user):
         return redirect('admin-dashboard')
     
-    return render('no-permission')
+    return redirect('no-permission')
