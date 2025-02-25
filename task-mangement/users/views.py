@@ -4,14 +4,13 @@ from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Prefetch
 from django.contrib.auth.decorators import user_passes_test
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView, UpdateView, FormView
 from users.forms import LoginForm, CustomRegistrationForm, AssignRoleForm, CreateGroupForm, CustomPasswordChangeForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm, EditProfileForm
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
 
-# Create your views here.
 # Test for users
 def is_admin(user):
     return user.groups.filter(name='Admin').exists()
@@ -32,6 +31,25 @@ class EditProfileView(UpdateView):
     def form_valid(self, form):
         form.save()
         return redirect('profile')
+
+
+# Sign Up View 
+class SignUp(FormView):
+    template_name = 'registration/register.html'
+    form_class = CustomRegistrationForm
+    success_url = reverse_lazy('sign-in')
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data.get('password1'))
+        user.is_active = False
+        user.save()
+        messages.success(self.request, 'A Confirmation mail sent. Please check your email')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form is not valid")
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 def sign_up(request):
@@ -89,8 +107,6 @@ def admin_dashboard(request):
     users = User.objects.prefetch_related(
         Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
     ).all()
-
-    # print(users)
 
     for user in users:
         if user.all_groups:
