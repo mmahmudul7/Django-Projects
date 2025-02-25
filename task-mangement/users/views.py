@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
@@ -10,6 +10,8 @@ from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordRes
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
+from django.views import View
+
 
 # Test for users
 def is_admin(user):
@@ -107,18 +109,28 @@ class AdminDashboard(TemplateView):
         return context
 
 
-@user_passes_test(is_admin, login_url='no-permission')
-def admin_dashboard(request):
-    users = User.objects.prefetch_related(
-        Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
-    ).all()
+# Assign Role View
+@method_decorator(admin_dashboard_decorators, name='dispatch')
+class AssignRole(View):
+    template_name = 'admin/assign_role.html'
 
-    for user in users:
-        if user.all_groups:
-            user.group_name = user.all_groups[0].name
-        else:
-            user.group_name = 'No Group Assigned'
-    return render(request, 'admin/dashboard.html', {"users": users})
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        form = AssignRoleForm()
+        return render(request, self.template_name, {"form": form, "user": user})
+
+    def post(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        form = AssignRoleForm(request.POST)
+
+        if form.is_valid():
+            role = form.cleaned_data.get('role')
+            user.groups.clear()
+            user.groups.add(role)
+            messages.success(request, f"User {user.username} has been assigned to the {role.name} role")
+            return redirect('admin-dashboard')
+
+        return render(request, self.template_name, {"form": form, "user": user})
 
 
 @user_passes_test(is_admin, login_url='no-permission')
