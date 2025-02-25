@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div>
+{% extends "admin/dashboard.html" %}
+{% block content %}
+    <div class="w-1/2 mx-auto my-8">
         <ol>
             {% for project in projects %}
                 <li>
@@ -16,5 +10,4 @@
             {% endfor %}
         </ol>
     </div>
-</body>
-</html>
+{% endblock content %}
