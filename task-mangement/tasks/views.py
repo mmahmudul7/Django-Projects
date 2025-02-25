@@ -65,28 +65,28 @@ class ManagerDashboard(View):
 def employee_dashboard(request):
     return render(request, "dashboard/user-dashboard.html")
 
-@login_required
-@permission_required("tasks.add_task", login_url="no-permission")
-def create_task(request):
-    # employees = Employee.objects.all()
-    task_form = TaskModelForm() # For GET. By default GET method thake, tay GET bola lagbe na
-    task_detail_form = TaskDetailModelForm()
+# @login_required
+# @permission_required("tasks.add_task", login_url="no-permission")
+# def create_task(request):
+#     # employees = Employee.objects.all()
+#     task_form = TaskModelForm() # For GET. By default GET method thake, tay GET bola lagbe na
+#     task_detail_form = TaskDetailModelForm()
 
-    if request.method == "POST": # For POST method.
-        task_form = TaskModelForm(request.POST)
-        task_detail_form = TaskDetailModelForm(request.POST, request.FILES)
-        if task_form.is_valid() and task_detail_form.is_valid():
-            """ For Model Form Data """
-            task = task_form.save()
-            task_detail = task_detail_form.save(commit=False)
-            task_detail.task = task
-            task_detail.save()
+#     if request.method == "POST": # For POST method.
+#         task_form = TaskModelForm(request.POST)
+#         task_detail_form = TaskDetailModelForm(request.POST, request.FILES)
+#         if task_form.is_valid() and task_detail_form.is_valid():
+#             """ For Model Form Data """
+#             task = task_form.save()
+#             task_detail = task_detail_form.save(commit=False)
+#             task_detail.task = task
+#             task_detail.save()
 
-            messages.success(request, "Task Created Successfully")
-            return redirect('create-task')
+#             messages.success(request, "Task Created Successfully")
+#             return redirect('create-task')
         
-    context = { "task_form": task_form, "task_detail_form": task_detail_form }
-    return render(request, "task_form.html", context)
+#     context = { "task_form": task_form, "task_detail_form": task_detail_form }
+#     return render(request, "task_form.html", context)
 
 
 # variable for list of decorators 
@@ -141,31 +141,31 @@ class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View
             return render(request, self.template_name, context)
 
 
-@login_required
-@permission_required("tasks.change_task", login_url="no-permission")
-def update_task(request, id):
-    task = Task.objects.get(id=id)
-    # employees = Employee.objects.all()
-    task_form = TaskModelForm(instance=task) # For GET. By default GET method thake, tay GET bola lagbe na
+# @login_required
+# @permission_required("tasks.change_task", login_url="no-permission")
+# def update_task(request, id):
+#     task = Task.objects.get(id=id)
+#     # employees = Employee.objects.all()
+#     task_form = TaskModelForm(instance=task) # For GET. By default GET method thake, tay GET bola lagbe na
 
-    if task.details:
-        task_detail_form = TaskDetailModelForm(instance=task.details)
+#     if task.details:
+#         task_detail_form = TaskDetailModelForm(instance=task.details)
 
-    if request.method == "POST": # For POST method.
-        task_form = TaskModelForm(request.POST, instance=task)
-        task_detail_form = TaskDetailModelForm(request.POST, instance=task.details)
-        if task_form.is_valid() and task_detail_form.is_valid():
-            """ For Model Form Data """
-            task = task_form.save()
-            task_detail = task_detail_form.save(commit=False)
-            task_detail.task = task
-            task_detail.save()
+#     if request.method == "POST": # For POST method.
+#         task_form = TaskModelForm(request.POST, instance=task)
+#         task_detail_form = TaskDetailModelForm(request.POST, instance=task.details)
+#         if task_form.is_valid() and task_detail_form.is_valid():
+#             """ For Model Form Data """
+#             task = task_form.save()
+#             task_detail = task_detail_form.save(commit=False)
+#             task_detail.task = task
+#             task_detail.save()
 
-            messages.success(request, "Task Updated Successfully")
-            return redirect('update-task', id)
+#             messages.success(request, "Task Updated Successfully")
+#             return redirect('update-task', id)
         
-    context = { "task_form": task_form, "task_detail_form": task_detail_form }
-    return render(request, "task_form.html", context)
+#     context = { "task_form": task_form, "task_detail_form": task_detail_form }
+#     return render(request, "task_form.html", context)
 
 
 
@@ -277,19 +277,19 @@ class ViewProject(ListView):
         return querset
     
 
-@login_required
-@permission_required("tasks.view_task", login_url="no-permission")
-def task_details(request, task_id):
-    task = Task.objects.get(id=task_id)
-    status_choices = Task.STATUS_CHOICES
+# @login_required
+# @permission_required("tasks.view_task", login_url="no-permission")
+# def task_details(request, task_id):
+#     task = Task.objects.get(id=task_id)
+#     status_choices = Task.STATUS_CHOICES
 
-    if request.method == 'POST':
-        selected_status = request.POST.get('task_status')
-        task.status = selected_status
-        task.save()
-        return redirect('task-details', task.id)
+#     if request.method == 'POST':
+#         selected_status = request.POST.get('task_status')
+#         task.status = selected_status
+#         task.save()
+#         return redirect('task-details', task.id)
 
-    return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
+#     return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
 
 
 class TaskDetails(DetailView):
