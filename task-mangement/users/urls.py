@@ -1,7 +1,6 @@
 from django.urls import path
-# from users.views import sign_up, sign_in, sign_out, activate_user, admin_dashboard, assign_role, create_group, group_list, CustomLoginView, ProfileView
 from users.views import sign_up, activate_user, admin_dashboard, assign_role, create_group, group_list, CustomLoginView, ProfileView, ChangePassword, CustomPasswordResetView, CustomPasswordResetConfirmView, EditProfileView
-from django.contrib.auth.views import LogoutView, PasswordChangeView, PasswordChangeDoneView
+from django.contrib.auth.views import LogoutView, PasswordChangeDoneView
 
 
 urlpatterns = [

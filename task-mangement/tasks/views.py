@@ -227,7 +227,7 @@ class DeleteTask(View):
         return redirect('manager-dashboard')
 
 
-# Show Tasks 
+# Show Projects and Number of Tasks 
 view_project_decorator = [login_required, permission_required(
     "projects.view_project",
     login_url='no-permission'
@@ -240,9 +240,9 @@ class ViewProject(ListView):
     template_name = 'show_task.html'
 
     def get_queryset(self):
-        querset = Project.objects.annotate(
+        queryset = Project.objects.annotate(
             num_task = Count('task')).order_by('num_task')
-        return querset
+        return queryset
 
 
 # Task Details 

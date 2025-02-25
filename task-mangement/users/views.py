@@ -1,47 +1,25 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import Group
 from django.contrib import messages
-from django.contrib.auth import login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Prefetch
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import TemplateView, UpdateView
 from users.forms import LoginForm, CustomRegistrationForm, AssignRoleForm, CreateGroupForm, CustomPasswordChangeForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm, EditProfileForm
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView
 from django.urls import reverse_lazy
-from users.models import CustomUser
 from django.contrib.auth import get_user_model
+
+
+# Create your views here.
+# Test for users
+def is_admin(user):
+    return user.groups.filter(name='Admin').exists()
+
 
 User = get_user_model()
 
-# Create your views here.
-
-"""
-class EditProfileView(UpdateView):
-    model = User
-    form_class = EditProfileForm
-    template_name = 'accounts/update_profile.html'
-    context_object_name = 'form'
-
-    def get_object(self):
-        return self.request.user
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['userprofile'] = UserProfile.objects.get(user=self.request.user)
-        return kwargs
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user_profile = UserProfile.objects.get(user=self.request.user)
-        context['form'] = self.form_class(instance=self.object, userprofile=user_profile)
-        return context
-    
-    def form_valid(self, form):
-        form.save(commit=True)
-        return redirect('profile')
-"""
-
+# Edit User Profile
 class EditProfileView(UpdateView):
     model = User
     form_class = EditProfileForm
@@ -54,11 +32,6 @@ class EditProfileView(UpdateView):
     def form_valid(self, form):
         form.save()
         return redirect('profile')
-    
-
-# Test for users
-def is_admin(user):
-    return user.groups.filter(name='Admin').exists()
 
 
 def sign_up(request):
@@ -79,17 +52,7 @@ def sign_up(request):
     return render(request, 'registration/register.html', {"form": form})
 
 
-def sign_in(request):
-    form = LoginForm()
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
-    return render(request, 'registration/login.html', {'form': form})
-
-
+# Login
 class CustomLoginView(LoginView):
     form_class = LoginForm
 
@@ -98,16 +61,13 @@ class CustomLoginView(LoginView):
         return next_url if next_url else super().get_success_url()
 
 
+# Change Password view
 class ChangePassword(PasswordChangeView):
     template_name = 'accounts/password_change.html'
     form_class = CustomPasswordChangeForm
 
 
-@login_required
-def sign_out(request):
-    if request.method == 'POST':
-        logout(request)
-        return redirect('sign-in')
+# Sign out "from django.contrib.auth.views import LogoutView" in url
 
 
 def activate_user(request, user_id, token):
@@ -177,6 +137,7 @@ def group_list(request):
     return render(request, 'admin/group_list.html', {'groups': groups})
 
 
+# Profile View
 class ProfileView(TemplateView):
     template_name = 'accounts/profile.html'
 
@@ -196,6 +157,7 @@ class ProfileView(TemplateView):
         return context
 
 
+# Custom Change Password Reset View
 class CustomPasswordResetView(PasswordResetView):
     form_class = CustomPasswordResetForm
     template_name = 'registration/reset_password.html'
@@ -216,6 +178,7 @@ class CustomPasswordResetView(PasswordResetView):
         return super().form_valid(form)
 
 
+# Custom Password Reset Confirm View
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     form_class = CustomPasswordResetConfirmForm
     template_name = 'registration/reset_password.html'
