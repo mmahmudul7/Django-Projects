@@ -64,11 +64,14 @@ class ManagerDashboard(View):
 class EmployeeDashboard(UserPassesTestMixin, TemplateView):
     template_name = "dashboard/user-dashboard.html"
 
-    def test_func(self):
+    def test_func(self):  
+        return self.user_is_employee() # test_func() builin
+
+    def user_is_employee(self):  
         return self.request.user.groups.filter(name='Employee').exists()
 
     def handle_no_permission(self):
-        return render(self.request, 'no-permission.html')
+        return redirect('no-permission')
 
 
 # Create Task 
