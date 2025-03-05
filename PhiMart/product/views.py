@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from product.models import Product
 
 # Create your views here.
@@ -15,7 +16,7 @@ def view_specific_product(request, id):
         }
         return Response(product_dict)
     except Product.DoesNotExist:
-        return Response({'message': 'Product dones not exists'})
+        return Response({'message': 'Product dones not exists'}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view()
