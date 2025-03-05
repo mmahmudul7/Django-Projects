@@ -1,12 +1,18 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
-from product.models import Product
-from product.serializers import ProductSerializer
+from product.models import Product, Category
+from product.serializers import ProductSerializer, CategorySerializer
 
 
 # Create your views here.
+
+@api_view()
+def view_products(request):
+    # products = Product.objects.all()
+    products = Product.objects.select_related('category').all()
+    serializer = ProductSerializer(products, many = True, context={'request': request})
+    return Response(serializer.data)
 
 @api_view()
 def view_specific_product(request, id):
@@ -18,3 +24,10 @@ def view_specific_product(request, id):
 @api_view()
 def view_categories(request):
     return Response({'message': 'Categories'})
+
+
+@api_view()
+def view_specific_category(request, pk):
+    category = get_object_or_404(Category, pk = pk)
+    serializer = CategorySerializer(category)
+    return Response(serializer.data)
