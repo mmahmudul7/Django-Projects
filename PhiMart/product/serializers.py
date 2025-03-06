@@ -73,3 +73,10 @@ class ProductSerializer(serializers.ModelSerializer):
     # def validate(self, attrs):
     #     if attrs['password1'] != attrs['password2']:
     #         raise serializers.ValidationError("Password didn't match!")
+
+    # def create(self, validated_data):
+    #     product = Product(**validated_data)
+    #     product.other = 1
+    #     product.save()
+    #     return product
+    
