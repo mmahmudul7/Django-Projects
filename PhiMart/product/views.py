@@ -34,12 +34,21 @@ def view_specific_product(request, id):
     return Response(serializer.data)
 
 
-@api_view()
+@api_view(['GET', 'POST'])
 def view_categories(request):
-    # categories = Category.objects.all()
-    categories = Category.objects.annotate(product_count=Count('products')).all()
-    serializer = CategorySerializer(categories, many = True)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        categories = Category.objects.annotate(product_count=Count('products')).all()
+        serializer = CategorySerializer(categories, many = True)
+        return Response(serializer.data)
+    
+    if request.method == 'POST':
+        serializer = CategorySerializer(data=request.data) # Deserializer
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view()
