@@ -4,16 +4,16 @@ from product.models import Category, Product
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    # product_count = serializers.IntegerField()
-    product_count = serializers.SerializerMethodField(method_name='get_product_count')
+    product_count = serializers.IntegerField(read_only=True)
+    # product_count = serializers.SerializerMethodField(method_name='get_product_count')
 
     class Meta:
         model = Category
         fields = ['id', 'name', 'description', 'product_count']
 
-    def get_product_count(self, category):
-        count = Product.objects.filter(category=category).count()
-        return count
+    # def get_product_count(self, category):
+    #     count = Product.objects.filter(category=category).count()
+    #     return count
 
 
 
