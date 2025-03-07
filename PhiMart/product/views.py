@@ -28,15 +28,6 @@ class ProductList(ListCreateAPIView):
     queryset = Product.objects.select_related('category').all()
     serializer_class = ProductSerializer
 
-    # def get_queryset(self):
-    #     return Product.objects.select_related('category').all()
-    
-    # def get_serializer_class(self):
-    #     return ProductSerializer
-    
-    # def get_serializer_context(self):
-    #     return {'request': self.request}
-
 
 class ViewSpecificProduct(APIView):
     def get(self, request, id):
@@ -70,6 +61,11 @@ class ViewCategories(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ProductCategories(ListCreateAPIView):
+    queryset = Category.objects.annotate(product_count=Count('products')).all()
+    serializer_class = CategorySerializer
 
 
 class ViewSpecificCategory(APIView):
