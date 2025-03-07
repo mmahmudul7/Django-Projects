@@ -29,27 +29,6 @@ class ProductDetails(RetrieveUpdateDestroyAPIView):
     #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ViewSpecificProduct(APIView):
-    def get(self, request, id):
-        product = get_object_or_404(Product, pk = id)
-        serializer = ProductSerializer(product)
-        return Response(serializer.data)
-    
-    def put(self, request, id):
-        product = get_object_or_404(Product, pk = id)
-        serializer = ProductSerializer(product, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-    def delete(self, request, id):
-        product = get_object_or_404(Product, pk = id)
-        copy_of_product = product
-        product.delete()
-        serializer = ProductSerializer(copy_of_product)
-        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-
-
 class ProductCategories(ListCreateAPIView):
     queryset = Category.objects.annotate(product_count=Count('products')).all()
     serializer_class = CategorySerializer
@@ -58,37 +37,3 @@ class ProductCategories(ListCreateAPIView):
 class CategoryDetails(RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.annotate(product_count=Count('products')).all()
     serializer_class = CategorySerializer
-
-
-class ViewSpecificCategory(APIView):
-    def get(self, request, id):
-        category = get_object_or_404(
-            Category.objects.annotate(
-                product_count = Count('products')
-            ).all(),
-            pk = id
-        )
-        serializer = CategorySerializer(category)
-        return Response(serializer.data)
-    
-    def put(self, request, id):
-        category = get_object_or_404(
-            Category.objects.annotate(
-                product_count = Count('products')
-            ).all(),
-            pk = id
-        )
-        serializer = CategorySerializer(category, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-    
-    def delete(self, request, id):
-        category = get_object_or_404(
-            Category.objects.annotate(
-                product_count = Count('products')
-            ).all(),
-            pk = id
-        )
-        category.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
