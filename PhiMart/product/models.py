@@ -26,3 +26,18 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    date = models.DateField(auto_now_add=True)
+
+
+# 4 Steps to build an API
+# -----------------------
+# Mode ready korte hoi 
+# Serializer banate hobe
+# ViewSet ready korte hobe
+# Router ready korte hobe
