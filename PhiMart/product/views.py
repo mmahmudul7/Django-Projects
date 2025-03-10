@@ -6,8 +6,16 @@ from rest_framework.viewsets import ModelViewSet
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+    # queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        category_id = self.request.query_params.get('category_id')
+
+        if category_id is not None:
+            queryset = Product.objects.filter(category_id=category_id)
+        return queryset
 
     def destroy(self, request, *args, **kwargs):
         product = self.get_object()
