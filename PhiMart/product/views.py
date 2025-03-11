@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from product.filters import ProductFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 
 
 class ProductViewSet(ModelViewSet):
@@ -13,6 +14,7 @@ class ProductViewSet(ModelViewSet):
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
+    pagination_class = PageNumberPagination
     search_fields = ['name', 'description']
     # search_fields = ['name', 'description', 'category__name']
     ordering_fields = ['price', 'updated_at']
