@@ -2,6 +2,8 @@ task_evn/
 __pycache__/
 node_modules/
 
+token.json
+
 # Python bytecode files
 *.pyc
 *.pyo
