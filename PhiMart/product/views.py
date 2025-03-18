@@ -7,8 +7,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from product.filters import ProductFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
 from product.paginations import DefaultPagination
-# from rest_framework.permissions import IsAdminUser, AllowAny 
-from api.permissions import IsAdminOrReadOnly
+from api.permissions import IsAdminOrReadOnly, FullDjangoModelPermission
+from rest_framework.permissions import DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
 
 
 class ProductViewSet(ModelViewSet):
@@ -19,13 +19,10 @@ class ProductViewSet(ModelViewSet):
     pagination_class = DefaultPagination
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'updated_at']
-    # permission_classes = [IsAdminUser]
     permission_classes = [IsAdminOrReadOnly]
-
-    # def get_permissions(self):
-    #     if self.request.method == 'GET':
-    #         return [AllowAny()]
-    #     return [IsAdminUser()]
+    # permission_classes = [DjangoModelPermissions]
+    # permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    # permission_classes = [FullDjangoModelPermission] # For Staff permissions
 
     def destroy(self, request, *args, **kwargs):
         product = self.get_object()
