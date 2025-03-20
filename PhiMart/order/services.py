@@ -1,5 +1,6 @@
 from order.models import Cart, Order, OrderItem
 from django.db import transaction
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 
 class OrderService:
@@ -30,4 +31,26 @@ class OrderService:
 
             return order
         
+    @staticmethod
+    def cancel_order(order, user):
+        if user.is_staff:
+            order.status = Order.CANCELED
+            order.save()
+            return order
+        
+        if order.user != user:
+            raise PermissionDenied(
+                {"details": "You can only cancel your own order"}
+            )
+        
+        if order.status == Order.DELIVERED:
+            raise ValidationError(
+                {"details": "You can not cancel an order"}
+            )
+        
+        order.status = Order.CANCELED
+        order.save()
+        return order
+        
 # Promotion or discount cupon code 
+
