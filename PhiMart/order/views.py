@@ -41,23 +41,32 @@ class CartItemViewSet(ModelViewSet):
 class OrderViewSet(ModelViewSet):
     http_method_names = ['get', 'post', 'delete', 'patch', 'head', 'options']
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'])
     def cancel(self, request, pk=None):
         order = self.get_object()
         OrderService.cancel_order(order=order, user=request.user)
         return Response({'status': 'Order canceled'})
+    
+    @action(detail=True, methods=['patch'])
+    def update_status(self, request, pk=None):
+        order = self.get_object()
+        serializer = OrderSz.UpdateOrderSerializer(order, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'status': f'Order status updated to {request.data['status']}'})
 
     def get_permissions(self):
-        if self.request.method == 'DELETE':
+        if self.action in ['update_status', 'destroy']:
             return[IsAdminUser()]
         return [IsAuthenticated()]
 
     def get_serializer_class(self):
         if self.action == 'cancel':
             return OrderSz.EmptySerializer
-        if self.request.method == 'POST':
+        if self.action == 'create':
             return OrderSz.CreateOrderSerializer
-        elif self.request.method == 'PATCH':
+        # elif self.action == 'partial_update':
+        elif self.action == 'update_status': # We use our custom partial_update function called update_status
             return OrderSz.UpdateOrderSerializer
         return OrderSz.OrderSerializer
     
