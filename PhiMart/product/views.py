@@ -1,14 +1,12 @@
-from rest_framework.response import Response
-from product.models import Product, Category, Review
-from product.serializers import ProductSerializer, CategorySerializer, ReviewSerializer
+from product.models import Product, Category, Review, ProductImage
+from product.serializers import ProductSerializer, CategorySerializer, ReviewSerializer, ProductImageSerializer
 from django.db.models import Count
 from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from product.filters import ProductFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
 from product.paginations import DefaultPagination
-from api.permissions import IsAdminOrReadOnly, FullDjangoModelPermission
-from rest_framework.permissions import DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
+from api.permissions import IsAdminOrReadOnly
 from product.permissions import IsReviewAuthorOrReadOnly
 
 
@@ -21,16 +19,16 @@ class ProductViewSet(ModelViewSet):
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'updated_at']
     permission_classes = [IsAdminOrReadOnly]
-    # permission_classes = [DjangoModelPermissions]
-    # permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
-    # permission_classes = [FullDjangoModelPermission] # For Staff permissions
 
-    def destroy(self, request, *args, **kwargs):
-        product = self.get_object()
-        if product.stock > 10:
-            return Response({'message': "Product with stock more than 10 could not be deleted"})
-        self.perform_destroy(product)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ProductImageViewSet(ModelViewSet):
+    serializer_class = ProductImageSerializer
+
+    def get_queryset(self):
+        return ProductImage.objects.filter(product_id=self.kwargs['product_pk'])
+    
+    def perform_create(self, serializer):
+        serializer.save(product_id=self.kwargs['product_pk'])
 
 
 class CategoryViewSet(ModelViewSet):
