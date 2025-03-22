@@ -8,6 +8,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from product.paginations import DefaultPagination
 from api.permissions import IsAdminOrReadOnly
 from product.permissions import IsReviewAuthorOrReadOnly
+from drf_yasg.utils import swagger_auto_schema
 
 
 class ProductViewSet(ModelViewSet):
@@ -27,12 +28,24 @@ class ProductViewSet(ModelViewSet):
     ordering_fields = ['price', 'updated_at']
     permission_classes = [IsAdminOrReadOnly]
 
+    @swagger_auto_schema(
+        operation_summary="Retrive a list of products"
+    )
     def list(self, request, *args, **kwargs):
         """Retrive all the products"""
         return super().list(request, *args, **kwargs)
     
+    @swagger_auto_schema(
+        operation_summary="Create a product by admin",
+        operation_description="Only authenticated admin can create products",
+        request_body=ProductSerializer,
+        responses={
+            201: ProductSerializer,
+            400: "Bad Request"
+        }
+    )
     def create(self, request, *args, **kwargs):
-        """Only authenticated admin can create products"""
+        # """Only authenticated admin can create products"""
         return super().create(request, *args, **kwargs)
 
 

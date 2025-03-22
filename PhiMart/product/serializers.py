@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    product_count = serializers.IntegerField(read_only=True)
+    product_count = serializers.IntegerField(read_only=True, help_text="Return the number of product in this category")
 
     class Meta:
         model = Category
