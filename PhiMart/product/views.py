@@ -11,6 +11,13 @@ from product.permissions import IsReviewAuthorOrReadOnly
 
 
 class ProductViewSet(ModelViewSet):
+    """
+    API endpoint for managing products in the e-commerce store
+     - Allows authenticated admin to create, update and delete products
+     - Allows users to browse and filter product
+     - Support searching by name, description and category
+     - Support ordering by price and update_at
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -19,6 +26,14 @@ class ProductViewSet(ModelViewSet):
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'updated_at']
     permission_classes = [IsAdminOrReadOnly]
+
+    def list(self, request, *args, **kwargs):
+        """Retrive all the products"""
+        return super().list(request, *args, **kwargs)
+    
+    def create(self, request, *args, **kwargs):
+        """Only authenticated admin can create products"""
+        return super().create(request, *args, **kwargs)
 
 
 class ProductImageViewSet(ModelViewSet):
