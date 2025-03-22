@@ -48,7 +48,7 @@ Phimart is a RESTful e-commerce API built using Django REST Framework (DRF). It 
 6. **Run the development server:**
    ```bash
    python manage.py runserver
-   ```    |
+   ```
 
 ## API Documentation
 Swagger documentation is available at:
