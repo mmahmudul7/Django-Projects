@@ -1,4 +1,4 @@
-import './App.css'
+// import './App.css'
 import FirstComponent from './components/FirstComponent';
 
 function App() {
