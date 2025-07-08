@@ -1,11 +1,16 @@
+import { useState } from "react";
+
 const List = () => {
     const fruits = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pine Apple'];
 
-    let selectedIndex = -1;
-    const handleItemPrint = (index) => {
-        selectedIndex = index;
-        console.log(selectedIndex);
-    };
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    // const [name, setName] = useState("");
+
+    // let selectedIndex = -1;
+    // const handleItemPrint = (index) => {
+    //     selectedIndex = index;
+    //     console.log(selectedIndex);
+    // };
 
     return (
         <div>
@@ -14,9 +19,9 @@ const List = () => {
                     return (
                         <li
                             className={
-                                selectedIndex === index ? "bg-blue-500 p-3 rounded-sm m-3" : ""
+                                selectedIndex === index ? "bg-blue-500 p-3 rounded-sm m-3 text-white" : ""
                             }
-                            onClick={() => handleItemPrint(index)}
+                            onClick={() => setSelectedIndex(index)}
                             key={fruit}
                         >
                             {fruit}
