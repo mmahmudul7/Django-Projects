@@ -1,21 +1,14 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 
-const List = () => {
-    const fruits = ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango', 'Pine Apple'];
-
+const List = ({ items = [], heading }) => {
     const [selectedIndex, setSelectedIndex] = useState(-1);
-    // const [name, setName] = useState("");
-
-    // let selectedIndex = -1;
-    // const handleItemPrint = (index) => {
-    //     selectedIndex = index;
-    //     console.log(selectedIndex);
-    // };
 
     return (
         <div>
+            <h1 className="text-xl font-bold">{heading}</h1>
             <ul className="pl-10 list-decimal text-xl">
-                {fruits.map((fruit, index) => {
+                {items.map((fruit, index) => {
                     return (
                         <li
                             className={
