@@ -3,7 +3,7 @@ const List = () => {
 
     return (
         <div>
-            <ul>
+            <ul className="pl-10 list-decimal text-xl">
                 {fruits.map((fruit) => {
                     return <li key={fruit}>{fruit}</li>;
                 })}

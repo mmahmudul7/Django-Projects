@@ -7,7 +7,7 @@ const FirstComponent = () => {
 
     return (
         <>
-            <h1>Hello {name && "World!"}</h1>
+            <h1 className="text-xl font-bold text-red-500">Hello {name && "World!"}</h1>
             <h1>Hello {name || "World!"}</h1>
             <p>Your mark is {sum(5, 34)}</p>
         </>
