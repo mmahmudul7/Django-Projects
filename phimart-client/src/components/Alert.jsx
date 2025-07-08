@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { CircleX } from 'lucide-react';
 
-const Alert = ({ color = 'info', children }) => {
-    const [visible, setVisible] = useState(true);
+const Alert = ({ color = 'info', children, onClose }) => {
 
     const alertStyle = {
         success: "bg-green-100 text-green-800 border border-green-300",
@@ -10,12 +9,13 @@ const Alert = ({ color = 'info', children }) => {
         info: "bg-blue-100 text-blue-800 border border-blue-300",
     };
 
-    if (!visible) return null;
-
     return (
         <div className={`flex items-center justify-between rounded-sm p-4 ${alertStyle[color]}`}>
             <span>{children}</span>
-            <button onClick={() => setVisible(false)}>x</button>
+            <button onClick={onClose}>
+                <CircleX className='text-red-800 hover:text-red-500' />
+            </button>
+            {/* <button onClick={() => onClose()}>x</button> */}
         </div>
     );
 };

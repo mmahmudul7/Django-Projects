@@ -3,17 +3,18 @@ import Alert from './Alert';
 import Button from './Button';
 
 const PlayWithButton = () => {
-    const handleClick = () => console.log("Button Clicked");
-
     const [alertVisible, setAlertVisible] = useState(false);
 
     return (
         <div>
             {alertVisible && (
-                <Alert color="success">You have clicked the oneSix Button</Alert>
+                <Alert color="success" onClose={() => setAlertVisible(false)}>
+                    You have clicked the oneSix Button
+                </Alert>
             )}
-            <Button handleClick={() => setAlertVisible(true)}>
-                Click Me
+            <Button className="font-extrabold"
+            handleClick={() => setAlertVisible(true)}>
+                oneSix
             </Button>
         </div>
     );
