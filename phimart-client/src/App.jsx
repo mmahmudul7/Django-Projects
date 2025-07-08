@@ -1,15 +1,11 @@
-// import './App.css'
-
-import Button from "./components/Button";
+import PlayWithButton from "./components/PlayWithButton";
 
 function App() {
-  const handleClick = () => console.log("Button Clicked");
-
   return (
     <>
-      {
-        <Button handleClick={handleClick} color="warning">oneSix Button</Button>
-      }
+        {/* <Alert color="error" />
+        <Button handleClick={handleClick} color="warning">oneSix Button</Button> */}
+        <PlayWithButton />
     </>
   );
 }
