@@ -1,13 +1,9 @@
-import Person from "./components/Person";
-// import PlayWithButton from "./components/PlayWithButton";
+import Skills from "./components/Skills";
 
 function App() {
   return (
     <>
-        {/* <Alert color="error" />
-        <Button handleClick={handleClick} color="warning">oneSix Button</Button> */}
-        {/* <PlayWithButton /> */}
-        <Person />
+      <Skills />
     </>
   );
 }
