@@ -1,10 +1,10 @@
-import Effect from "./components/Effect";
+import APIFetch from "./components/APIFetch";
 
 
 function App() {
   return (
-    <div className="m-5">
-      <Effect />
+    <div>
+      <APIFetch />
     </div>
   );
 }
