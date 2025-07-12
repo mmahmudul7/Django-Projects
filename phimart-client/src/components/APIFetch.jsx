@@ -6,9 +6,8 @@ const APIFetch = () => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        axios.get("https://jsonplaceholder.typicode.com/user")
+        axios.get("https://jsonplaceholder.typicode.com/users")
         .then((data) => setUsers(data.data))
-        // .catch((err) => console.log(err));
         .catch((err) => setError(err.message));
     }, []);
 
