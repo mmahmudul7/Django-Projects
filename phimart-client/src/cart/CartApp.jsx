@@ -46,6 +46,8 @@ const CartApp = () => {
         setCart(
             cart.map(item =>
                 item.name == name ? {...item, quantity: item.quantity - 1 } : item
+            ).filter((item) =>
+                item.quantity > 0
             )
         );
     };
@@ -54,6 +56,11 @@ const CartApp = () => {
     const RemoveItem = (name) => {
         setCart(cart.filter((item) => item.name != name ));
     };
+
+    // Calculate total price 
+    const totalPrice = cart.reduce(
+        (total, item) => total + item.price * item.quantity, 0
+    );
 
     return (
         <div className="w-2/3 mx-auto bg-gray-100 rounded-lg p-6 shadow-md">
@@ -86,7 +93,7 @@ const CartApp = () => {
                     ))}
 
                     {/* Total Price  */}
-                    <div className="mt-4 font-bold text-lg">Total: 41000</div>
+                    <div className="mt-4 font-bold text-lg">Total: ${totalPrice.toFixed(2)}</div>
                 </div>
             ) : (
                 <p>No Cart Items</p>
