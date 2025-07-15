@@ -32,6 +32,29 @@ const CartApp = () => {
         }
     };
 
+    // Increase Quantity / Update
+    const increaseQuantity = (name) => {
+        setCart(
+            cart.map(item =>
+                item.name == name ? {...item, quantity: item.quantity + 1 } : item
+            )
+        );
+    };
+
+    // Decrease Quantity / Update
+    const decreaseQuantity = (name) => {
+        setCart(
+            cart.map(item =>
+                item.name == name ? {...item, quantity: item.quantity - 1 } : item
+            )
+        );
+    };
+
+    // Remove Item 
+    const RemoveItem = (name) => {
+        setCart(cart.filter((item) => item.name != name ));
+    };
+
     return (
         <div className="w-2/3 mx-auto bg-gray-100 rounded-lg p-6 shadow-md">
 
@@ -52,12 +75,12 @@ const CartApp = () => {
                             <p className="text-sm text-gray-600">{(item.price * item.quantity).toFixed(2)}</p>
 
                             <div className="flex items-center">
-                                <button className="bg-red-500 text-white px-2 py-1 rounded">-</button>
+                                <button onClick={() => decreaseQuantity(item.name)} className="bg-red-500 text-white px-2 py-1 rounded">-</button>
                                 <span className="mx-2">{item.quantity}</span>
-                                <button className="bg-green-500 text-white px-2 py-1 rounded">+</button>
+                                <button onClick={() => increaseQuantity(item.name)} className="bg-green-500 text-white px-2 py-1 rounded">+</button>
                             </div>
 
-                            <button><Trash2 /></button>
+                            <button onClick={() => RemoveItem(item.name)}><Trash2 /></button>
                         </div>
                         
                     ))}
