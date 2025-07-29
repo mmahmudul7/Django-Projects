@@ -10,11 +10,14 @@ import 'swiper/css/navigation';
 
 const Product = () => {
     const [products, setProducts] = useState([]);
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
-        axios
-            .get('http://127.0.0.1:8000/api/v1/products/')
-            .then((res) => setProducts(res.data.results));
+        setLoading(true);
+        axios.get('http://127.0.0.1:8000/api/v1/products/').then((res) => {
+            setProducts(res.data.results);
+            setLoading(false);
+        });
     }, []);
     return (
         <section className="mx-auto py-16 bg-gray-50">
@@ -29,6 +32,12 @@ const Product = () => {
                     View All
                 </a>
             </div>
+            {/* Spinner  */}
+            {isLoading && (
+                <div className="flex justify-center items-center py-10">
+                    <span className="loading loading-spinner loading-xl text-secondary"></span>
+                </div>
+            )}
             {/* Product Slider  */}
             <Swiper
                 modules={[Navigation]}
