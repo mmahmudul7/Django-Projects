@@ -23,8 +23,12 @@ const Category = () => {
 
             {/* Category Grid  */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {categories.map((category) => (
-                    <CategoryItems key={category.id} />
+                {categories.map((category, index) => (
+                    <CategoryItems
+                        key={category.id}
+                        index={index}
+                        category={category}
+                    />
                 ))}
             </div>
         </section>
