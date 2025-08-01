@@ -13,22 +13,6 @@ const ShopPage = () => {
         fetchProducts();
     }, [currentPage]);
 
-    /*
-    const fetchProducts = () => {
-        setLoading(true);
-        apiClient
-            .get(`/products/?page=${currentPage}`)
-            .then((res) => {
-                setProducts(res.data.results);
-                setTotalPages(
-                    Math.ceil(res.data.count / res.data.results.length)
-                );
-            })
-            .catch((error) => console.log(error))
-            .finally(() => setLoading(false));
-    };
-    */
-
     const fetchProducts = async () => {
         setLoading(true);
         try {

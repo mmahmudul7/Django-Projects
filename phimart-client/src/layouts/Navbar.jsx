@@ -51,7 +51,7 @@ const Navbar = () => {
                 </div>
 
                 <Link to="/" className="btn btn-ghost text-xl">
-                    daisyUI
+                    phiMart
                 </Link>
             </div>
             <div className="navbar-center hidden lg:flex">
@@ -129,7 +129,7 @@ const Navbar = () => {
                         <div className="w-10 rounded-full">
                             <img
                                 alt="Tailwind CSS Navbar component"
-                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                src="https://img.phiMart.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                             />
                         </div>
                     </div>

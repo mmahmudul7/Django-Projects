@@ -1,4 +1,4 @@
-import bgImg from '../../assets/images/banner-image-bg.webp';
+import bgImg from '../../../assets/images/banner-image-bg.webp';
 
 const CarouselSlide = ({ title, subtitle, image }) => {
     return (
