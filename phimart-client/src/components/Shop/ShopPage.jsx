@@ -10,12 +10,14 @@ const ShopPage = () => {
     const [priceRange, setPriceRange] = useState([0, 1000]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
 
     const { products, loading, totalPages } = useFetchProducts(
         currentPage,
         priceRange,
         selectedCategory,
-        searchQuery
+        searchQuery,
+        sortOrder
     );
 
     const categories = useFetchCategories();
@@ -40,6 +42,8 @@ const ShopPage = () => {
                 handleCategoryChange={setSelectedCategory}
                 searchQuery={searchQuery}
                 handleSearchQuery={setSearchQuery}
+                sortOrder={sortOrder}
+                handleSorting={setSortOrder}
             />
             <ProductList products={products} loading={loading} />
             <Pagination
