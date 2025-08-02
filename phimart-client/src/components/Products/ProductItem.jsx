@@ -2,7 +2,7 @@ import defaultImage from '../../assets/default_product.webp';
 
 const ProductItem = ({ product }) => {
     return (
-        <div className="card bg-base-100 w-96 shadow-sm">
+        <div className="card bg-base-100 w-96 shadow-sm mb-6">
             <figure className="px-10 pt-10">
                 <img
                     src={
