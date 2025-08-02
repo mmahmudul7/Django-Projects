@@ -1,11 +1,10 @@
 from django.db import models
 from django.conf import settings
-from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from product.validators import validate_file_size
 from cloudinary.models import CloudinaryField
 
 
-# Create your models here.
 
 class Category(models.Model):
     name = models.CharField(max_length=100)

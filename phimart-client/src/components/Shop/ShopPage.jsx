@@ -7,7 +7,10 @@ import FilterSection from './FilterSection';
 const ShopPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [priceRange, setPriceRange] = useState([0, 1000]);
-    const { products, loading, totalPages } = useFetchProducts(currentPage);
+    const { products, loading, totalPages } = useFetchProducts(
+        currentPage,
+        priceRange
+    );
 
     const handlePriceChange = (index, value) => {
         setPriceRange((prev) => {
