@@ -2,6 +2,8 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 import useAuthContext from '../hooks/useAuthContext';
 import ErrorAlert from '../components/ErrorAlert';
+import { useState } from 'react';
+import { FaS } from 'react-icons/fa6';
 
 const Login = () => {
     const {
@@ -12,14 +14,18 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    const { user, errorMsg, loginUser } = useAuthContext();
+    const { errorMsg, loginUser } = useAuthContext();
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = async (data) => {
+        setLoading(true);
         try {
             await loginUser(data);
             navigate('/dashboard');
         } catch (error) {
             console.log('Login Failed', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -84,8 +90,9 @@ const Login = () => {
                         <button
                             type="submit"
                             className="btn btn-primary w-full"
+                            disabled={loading}
                         >
-                            Login
+                            {loading ? 'Loggin In ...' : 'Login'}
                         </button>
                     </form>
 
