@@ -3,6 +3,7 @@ import apiClient from '../services/api-client';
 
 const useAuth = () => {
     const [user, setUser] = useState(null);
+    const [errorMsg, setErrorMsg] = useState('');
 
     const getToken = () => {
         const token = localStorage.getItem('authTokens');
@@ -29,6 +30,7 @@ const useAuth = () => {
 
     // Login User
     const loginUser = async (userData) => {
+        setErrorMsg('');
         try {
             const response = await apiClient.post(
                 '/auth/jwt/create/',
@@ -37,11 +39,11 @@ const useAuth = () => {
             setAuthTokens(response.data);
             localStorage.setItem('authTokens', JSON.stringify(response.data));
         } catch (error) {
-            console.log('Login Error', error.data?.response);
+            setErrorMsg(error.response.data?.detail);
         }
     };
 
-    return { user, loginUser };
+    return { user, errorMsg, loginUser };
 };
 
 export default useAuth;

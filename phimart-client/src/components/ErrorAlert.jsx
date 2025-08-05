@@ -1,6 +1,6 @@
 const ErrorAlert = ({ error }) => {
     return (
-        <div role="alert" className="alert alert-error m-7">
+        <div role="alert" className="alert alert-error">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 shrink-0 stroke-current"
