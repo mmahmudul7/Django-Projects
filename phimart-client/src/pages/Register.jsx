@@ -1,6 +1,19 @@
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
 
 const Register = () => {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm();
+
+    const onSubmit = (data) => {
+        delete data.confirm_password;
+        console.log(data);
+    };
+
     return (
         <div className="flex min-h-screen items-center justify-center px-4 py-12 bg-base-200">
             <div className="card w-full max-w-md bg-base-100 shadow-xl">
@@ -10,7 +23,10 @@ const Register = () => {
                         Create an account to get started
                     </p>
 
-                    <form className="space-y-4 mt-4">
+                    <form
+                        className="space-y-4 mt-4"
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
                         <div className="form-control">
                             <label className="label" htmlFor="first_name">
                                 <span className="label-text">First Name</span>
@@ -20,7 +36,15 @@ const Register = () => {
                                 type="text"
                                 placeholder="John"
                                 className="input input-bordered w-full"
+                                {...register('first_name', {
+                                    required: 'Fast Name is required',
+                                })}
                             />
+                            {errors.first_name && (
+                                <span className="label-text-alt text-error">
+                                    {errors.first_name.message}
+                                </span>
+                            )}
                         </div>
 
                         <div className="form-control">
@@ -32,7 +56,15 @@ const Register = () => {
                                 type="text"
                                 placeholder="Doe"
                                 className="input input-bordered w-full"
+                                {...register('last_name', {
+                                    required: 'Last Name is required',
+                                })}
                             />
+                            {errors.last_name && (
+                                <span className="label-text-alt text-error">
+                                    {errors.last_name.message}
+                                </span>
+                            )}
                         </div>
 
                         <div className="form-control">
@@ -44,7 +76,15 @@ const Register = () => {
                                 type="email"
                                 placeholder="name@example.com"
                                 className="input input-bordered w-full"
+                                {...register('email', {
+                                    required: 'Email is required',
+                                })}
                             />
+                            {errors.email && (
+                                <span className="label-text-alt text-error">
+                                    {errors.email.message}
+                                </span>
+                            )}
                         </div>
 
                         <div className="form-control">
@@ -56,6 +96,7 @@ const Register = () => {
                                 type="text"
                                 placeholder="7/A Dhanmondi, Dhaka"
                                 className="input input-bordered w-full"
+                                {...register('address')}
                             />
                         </div>
 
@@ -68,6 +109,7 @@ const Register = () => {
                                 type="text"
                                 placeholder="0123456789"
                                 className="input input-bordered w-full"
+                                {...register('phone_number')}
                             />
                         </div>
 
@@ -80,7 +122,20 @@ const Register = () => {
                                 type="password"
                                 placeholder="••••••••"
                                 className="input input-bordered w-full"
+                                {...register('password', {
+                                    required: 'Password is required',
+                                    minLength: {
+                                        value: 8,
+                                        message:
+                                            'Password must be at least 8 characters ',
+                                    },
+                                })}
                             />
+                            {errors.password && (
+                                <span className="label-text-alt text-error">
+                                    {errors.password.message}
+                                </span>
+                            )}
                         </div>
 
                         <div className="form-control">
@@ -94,7 +149,18 @@ const Register = () => {
                                 type="password"
                                 placeholder="••••••••"
                                 className="input input-bordered w-full"
+                                {...register('confirm_password', {
+                                    required: 'Confirm Password is required',
+                                    validate: (value) =>
+                                        value == watch('password') ||
+                                        'Password do not match',
+                                })}
                             />
+                            {errors.confirm_password && (
+                                <span className="label-text-alt text-error">
+                                    {errors.confirm_password.message}
+                                </span>
+                            )}
                         </div>
 
                         <button
