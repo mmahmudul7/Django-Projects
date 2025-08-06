@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router';
 import useAuthContext from '../hooks/useAuthContext';
 import ErrorAlert from '../components/ErrorAlert';
 import { useState } from 'react';
-import { FaS } from 'react-icons/fa6';
 
 const Login = () => {
     const {
