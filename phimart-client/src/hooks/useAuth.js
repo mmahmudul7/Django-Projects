@@ -67,7 +67,14 @@ const useAuth = () => {
         }
     };
 
-    return { user, errorMsg, loginUser, registerUser };
+    // Logout User
+    const logoutUser = () => {
+        setAuthTokens(null);
+        setUser(null);
+        localStorage.removeItem('authTokens');
+    };
+
+    return { user, errorMsg, loginUser, registerUser, logoutUser };
 };
 
 export default useAuth;
