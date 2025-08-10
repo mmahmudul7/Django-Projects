@@ -1,16 +1,39 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ProfileForm from '../components/Dashboard/Profile/ProfileForm';
 import ProfileButtons from '../components/Dashboard/Profile/ProfileButtons';
 import PasswordChangeForm from '../components/Dashboard/Profile/PasswordChangeForm';
+import useAuthContext from '../hooks/useAuthContext';
 
 const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
+    const { user, updateUserProfile } = useAuthContext();
     const {
         register,
+        handleSubmit,
         watch,
+        setValue,
         formState: { errors },
     } = useForm();
+
+    useEffect(() => {
+        Object.keys(user).forEach((key) => setValue(key, user[key]));
+    }, [user, setValue]);
+
+    const onSubmit = async (data) => {
+        try {
+            const profilePayload = {
+                first_name: data.first_name,
+                last_name: data.last_name,
+                address: data.address,
+                phone_number: data.phone_number,
+            };
+            await updateUserProfile(profilePayload);
+            alert('Profile updated');
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="card w-full max-w-2xl mx-auto bg-base-100 shadow-xl">
@@ -19,7 +42,7 @@ const Profile = () => {
                     Profile Information
                 </h2>
 
-                <form action="">
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <ProfileForm
                         register={register}
                         errors={errors}
