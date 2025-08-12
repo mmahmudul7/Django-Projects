@@ -23,12 +23,16 @@ const ProductDetail = () => {
     };
 
     return (
-        <div>
-            <ProductImageGallery
-                images={product.images}
-                ProductName={product.name}
-            />
-            <AddToCartButton />
+        <div className="w-3/4 mx-auto px-4 py-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <ProductImageGallery
+                    images={product.images}
+                    ProductName={product.name}
+                />
+                <div className="mt-auto">
+                    <AddToCartButton product={product} />
+                </div>
+            </div>
         </div>
     );
 };
