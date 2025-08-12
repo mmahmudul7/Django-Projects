@@ -1,28 +1,30 @@
 import { FaArrowLeft } from 'react-icons/fa6';
 import AddToCartButton from '../components/ProductDetails/AddToCartButton';
 import ProductImageGallery from '../components/ProductDetails/ProductImageGallery';
-import { Link } from 'react-router';
+import { Link, useParams } from 'react-router';
+import { Suspense, useEffect, useState } from 'react';
+import apiClient from '../services/api-client';
 
 const ProductDetail = () => {
-    const product = {
-        id: 40,
-        name: 'Fantasy Novel',
-        description: 'High-quality fantasy novel for everyday use.',
-        price: 347.72,
-        stock: 102,
-        category: 4,
-        price_with_tax: 382.49,
-        images: [
-            {
-                id: 4,
-                image: 'https://res.cloudinary.com/duq4xgaca/image/upload/v1754894675/ef76jiqe3toduay3jplp.webp',
-            },
-            {
-                id: 5,
-                image: 'https://res.cloudinary.com/duq4xgaca/image/upload/v1754894691/ewydg8zf4d2kptjb6dql.jpg',
-            },
-        ],
-    };
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const { productId } = useParams();
+
+    useEffect(() => {
+        setLoading(true);
+        apiClient
+            .get(`/products/${productId}/`)
+            .then((res) => {
+                setProduct(res.data);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }, [productId]);
+
+    if (loading) return <div>Loading ... </div>;
+    if (!product) return <div>Product Not Found ... </div>;
 
     return (
         <div className="w-3/4 mx-auto px-4 py-8">
@@ -37,10 +39,16 @@ const ProductDetail = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-                <ProductImageGallery
-                    images={product.images}
-                    ProductName={product.name}
-                />
+                <Suspense
+                    fallback={
+                        <div className="aspect-square bg-base-300 animate-pulse rounded-lg"></div>
+                    }
+                >
+                    <ProductImageGallery
+                        images={product.images}
+                        ProductName={product.name}
+                    />
+                </Suspense>
 
                 <div className="flex flex-col">
                     <div className="mb-4">
@@ -62,31 +70,31 @@ const ProductDetail = () => {
                             </span>
                         </div>
                     </div>
-                </div>
 
-                <div className="prose prose-sm mb-6">
-                    <p>{product.description}</p>
-                </div>
-
-                <div className="mb-6">
-                    <div className="flex items-center">
-                        <div className="mr-2 text-sm font-medium">
-                            Availability:
-                        </div>
-                        {product.stock > 0 ? (
-                            <div className="badge badge-outline bg-success/10 text-success border-success/20">
-                                In Stock {product.stock} avaiiable
-                            </div>
-                        ) : (
-                            <div className="badge badge-outline bg-error/10 text-error border-error/20">
-                                Out of Stock
-                            </div>
-                        )}
+                    <div className="prose prose-sm mb-6">
+                        <p>{product.description}</p>
                     </div>
-                </div>
 
-                <div className="mt-auto">
-                    <AddToCartButton product={product} />
+                    <div className="mb-6">
+                        <div className="flex items-center">
+                            <div className="mr-2 text-sm font-medium">
+                                Availability:
+                            </div>
+                            {product.stock > 0 ? (
+                                <div className="badge badge-outline bg-success/10 text-success border-success/20">
+                                    In Stock ({product.stock} avaiiable)
+                                </div>
+                            ) : (
+                                <div className="badge badge-outline bg-error/10 text-error border-error/20">
+                                    Out of Stock
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="mt-auto">
+                        <AddToCartButton product={product} />
+                    </div>
                 </div>
             </div>
         </div>

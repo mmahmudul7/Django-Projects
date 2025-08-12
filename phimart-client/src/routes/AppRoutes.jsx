@@ -27,7 +27,7 @@ const AppRoutes = () => {
                     path="activate/:uid/:token"
                     element={<ActivateAccount />}
                 />
-                <Route path="shop/:id" element={<ProductDetail />} />
+                <Route path="shop/:productId" element={<ProductDetail />} />
             </Route>
 
             {/* Private Routes  */}
