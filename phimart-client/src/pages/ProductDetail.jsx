@@ -31,7 +31,8 @@ const ProductDetail = () => {
                     to="/shop"
                     className="flex items-center text-sm text-base-context/70 hover:text-base-content transition-colors"
                 >
-                    <FaArrowLeft className="mr-2 h-4 h-w" /> Back to products
+                    <FaArrowLeft className="mr-2 h-4 w-4" />
+                    Back to products
                 </Link>
             </div>
 
@@ -43,24 +44,28 @@ const ProductDetail = () => {
 
                 <div className="flex flex-col">
                     <div className="mb-4">
-                        <div className="badge badge-outline mb-2">Category</div>
+                        <div className="badge badge-outline mb-2">
+                            Category {product.category}
+                        </div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Product Name
+                            {product.name}
                         </h1>
                     </div>
 
                     <div className="mt-2 mb-6">
                         <div className="flex items-baseline gap-2">
-                            <span className="text-3xl font-bold">$100</span>
+                            <span className="text-3xl font-bold">
+                                ${product.price}
+                            </span>
                             <span className="text-sm text-base-content/70">
-                                $116 incl. tax
+                                ${product.price_with_tax} incl. tax
                             </span>
                         </div>
                     </div>
                 </div>
 
                 <div className="prose prose-sm mb-6">
-                    <p>Product Description</p>
+                    <p>{product.description}</p>
                 </div>
 
                 <div className="mb-6">
@@ -68,14 +73,15 @@ const ProductDetail = () => {
                         <div className="mr-2 text-sm font-medium">
                             Availability:
                         </div>
-
-                        <div className="badge badge-outline bg-success/10 text-success border-success/20">
-                            In Stock 3 avaiiable
-                        </div>
-
-                        <div className="badge badge-outline bg-error/10 text-error border-error/20">
-                            Out of Stock
-                        </div>
+                        {product.stock > 0 ? (
+                            <div className="badge badge-outline bg-success/10 text-success border-success/20">
+                                In Stock {product.stock} avaiiable
+                            </div>
+                        ) : (
+                            <div className="badge badge-outline bg-error/10 text-error border-error/20">
+                                Out of Stock
+                            </div>
+                        )}
                     </div>
                 </div>
 
