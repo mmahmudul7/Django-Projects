@@ -1,3 +1,4 @@
+import AddToCartButton from '../components/ProductDetails/AddToCartButton';
 import ProductImageGallery from '../components/ProductDetails/ProductImageGallery';
 
 const ProductDetail = () => {
@@ -27,6 +28,7 @@ const ProductDetail = () => {
                 images={product.images}
                 ProductName={product.name}
             />
+            <AddToCartButton />
         </div>
     );
 };
