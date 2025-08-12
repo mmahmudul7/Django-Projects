@@ -1,5 +1,7 @@
+import { FaArrowLeft } from 'react-icons/fa6';
 import AddToCartButton from '../components/ProductDetails/AddToCartButton';
 import ProductImageGallery from '../components/ProductDetails/ProductImageGallery';
+import { Link } from 'react-router';
 
 const ProductDetail = () => {
     const product = {
@@ -24,11 +26,59 @@ const ProductDetail = () => {
 
     return (
         <div className="w-3/4 mx-auto px-4 py-8">
+            <div className="mb-6">
+                <Link
+                    to="/shop"
+                    className="flex items-center text-sm text-base-context/70 hover:text-base-content transition-colors"
+                >
+                    <FaArrowLeft className="mr-2 h-4 h-w" /> Back to products
+                </Link>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                 <ProductImageGallery
                     images={product.images}
                     ProductName={product.name}
                 />
+
+                <div className="flex flex-col">
+                    <div className="mb-4">
+                        <div className="badge badge-outline mb-2">Category</div>
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            Product Name
+                        </h1>
+                    </div>
+
+                    <div className="mt-2 mb-6">
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-3xl font-bold">$100</span>
+                            <span className="text-sm text-base-content/70">
+                                $116 incl. tax
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="prose prose-sm mb-6">
+                    <p>Product Description</p>
+                </div>
+
+                <div className="mb-6">
+                    <div className="flex items-center">
+                        <div className="mr-2 text-sm font-medium">
+                            Availability:
+                        </div>
+
+                        <div className="badge badge-outline bg-success/10 text-success border-success/20">
+                            In Stock 3 avaiiable
+                        </div>
+
+                        <div className="badge badge-outline bg-error/10 text-error border-error/20">
+                            Out of Stock
+                        </div>
+                    </div>
+                </div>
+
                 <div className="mt-auto">
                     <AddToCartButton product={product} />
                 </div>
