@@ -6,6 +6,7 @@ const useCart = () => {
         () => JSON.parse(localStorage.getItem('authTokens')).access
     );
     const [cart, setCart] = useState(null);
+    const [cartId, setCartId] = useState(() => localStorage.getItem('cartId'));
     // Create a new Cart
     const createOrGetCart = async () => {
         // console.log(authToken);
@@ -18,8 +19,11 @@ const useCart = () => {
                 }
             );
             // console.log(response.data);
+            if (!cartId) {
+                localStorage.setItem('cartId', response.data.id);
+                setCartId(response.data.id);
+            }
             setCart(response.data);
-            localStorage.setItem('cartId', response.data.id);
         } catch (error) {
             console.log(error);
         }
