@@ -28,7 +28,25 @@ const useCart = () => {
             console.log(error);
         }
     };
-    return { cart, createOrGetCart };
+
+    // Add items to the cart
+    const AddCartItems = async (product_id, quantity) => {
+        if (!cartId) await createOrGetCart();
+        try {
+            const response = await apiClient.post(
+                `/carts/${cartId}/items/`,
+                { product_id, quantity },
+                {
+                    headers: { Authorization: `JWT ${authToken}` },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.log('Error adding Items', error);
+        }
+    };
+
+    return { cart, createOrGetCart, AddCartItems };
 };
 
 export default useCart;
