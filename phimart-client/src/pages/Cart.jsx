@@ -3,7 +3,6 @@ import useCartContext from '../hooks/useCartContext';
 import CartItemList from '../components/Cart/CartItemList';
 
 const Cart = () => {
-    // const { cart, createOrGetCart } = useCartContext();
     const { cart, loading, createOrGetCart, updateCartItemQuantity } =
         useCartContext();
 
@@ -20,7 +19,7 @@ const Cart = () => {
         }
     };
 
-    if (!loading) return <p>Loading ....</p>;
+    if (loading) return <p>Loading ....</p>;
     if (!cart) return <p>No Cart Found</p>;
 
     return (

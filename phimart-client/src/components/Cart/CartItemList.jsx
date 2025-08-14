@@ -1,6 +1,6 @@
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-const CartItemList = ({ items, handleCartItemQuantity }) => {
+const CartItemList = ({ items, handleUpdateQuantity }) => {
     if (items.length == 0) {
         return (
             <div className="py-6 text-center text-gray-500">
@@ -37,10 +37,12 @@ const CartItemList = ({ items, handleCartItemQuantity }) => {
                                 <td>
                                     <div className="flex items-center join">
                                         <button
-                                            onClick={handleCartItemQuantity(
-                                                item.id,
-                                                item.quantity - 1
-                                            )}
+                                            onClick={() =>
+                                                handleUpdateQuantity(
+                                                    item.id,
+                                                    item.quantity - 1
+                                                )
+                                            }
                                             className="btn btn-xs btn-outline join-item"
                                         >
                                             -
@@ -50,7 +52,7 @@ const CartItemList = ({ items, handleCartItemQuantity }) => {
                                             min="1"
                                             value={item.quantity}
                                             onChange={(e) =>
-                                                handleCartItemQuantity(
+                                                handleUpdateQuantity(
                                                     item.id,
                                                     e.target.value
                                                 )
@@ -58,10 +60,12 @@ const CartItemList = ({ items, handleCartItemQuantity }) => {
                                             className="input input-xs input-bordered join-item w-12 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         />
                                         <button
-                                            onClick={handleCartItemQuantity(
-                                                item.id,
-                                                item.quantity + 1
-                                            )}
+                                            onClick={() =>
+                                                handleUpdateQuantity(
+                                                    item.id,
+                                                    item.quantity + 1
+                                                )
+                                            }
                                             className="btn btn-xs btn-outline join-item"
                                         >
                                             +
