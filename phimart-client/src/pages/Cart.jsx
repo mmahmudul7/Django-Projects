@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import useCartContext from '../hooks/useCartContext';
+import CartItemList from '../components/Cart/CartItemList';
 
 const Cart = () => {
-    const { cart, createOrGetCart } = useCartContext();
+    // const { cart, createOrGetCart } = useCartContext();
+    const { createOrGetCart } = useCartContext();
 
     useEffect(() => {
         console.log('Create or get');
@@ -11,8 +13,10 @@ const Cart = () => {
 
     return (
         <div>
-            This is cart page <br />
-            <h2>{JSON.stringify(cart)}</h2>
+            <div>
+                <CartItemList />
+            </div>
+            <div></div>
         </div>
     );
 };
