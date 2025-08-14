@@ -5,8 +5,9 @@ const Cart = () => {
     const { cart, createOrGetCart } = useCartContext();
 
     useEffect(() => {
+        console.log('Create or get');
         createOrGetCart();
-    }, []);
+    }, [createOrGetCart]);
 
     return (
         <div>
