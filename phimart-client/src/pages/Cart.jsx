@@ -18,6 +18,8 @@ const Cart = () => {
     }, [cart]);
 
     const handleUpdateQuantity = async (itemId, newQuantity) => {
+        const prevLocalCartCopy = localCart; // Store a copy of localCart
+
         setLocalCart((prevLocalCart) => ({
             ...prevLocalCart,
             items: prevLocalCart.items.map((item) =>
@@ -29,6 +31,7 @@ const Cart = () => {
             await updateCartItemQuantity(itemId, newQuantity);
         } catch (error) {
             console.log(error);
+            setLocalCart(prevLocalCartCopy); // Rollback to previous state if API fails
         }
     };
 
