@@ -64,12 +64,25 @@ const useCart = () => {
         [cartId]
     );
 
+    // Delete Cart Item
+    const deleteCartItems = useCallback(
+        async (itemId) => {
+            try {
+                await authApiClient.delete(`/carts/${cartId}/items/${itemId}/`);
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        [cartId]
+    );
+
     return {
         cart,
         loading,
         createOrGetCart,
         AddCartItems,
         updateCartItemQuantity,
+        deleteCartItems,
     };
 };
 

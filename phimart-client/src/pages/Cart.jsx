@@ -3,8 +3,13 @@ import useCartContext from '../hooks/useCartContext';
 import CartItemList from '../components/Cart/CartItemList';
 
 const Cart = () => {
-    const { cart, loading, createOrGetCart, updateCartItemQuantity } =
-        useCartContext();
+    const {
+        cart,
+        loading,
+        createOrGetCart,
+        updateCartItemQuantity,
+        deleteCartItems,
+    } = useCartContext();
 
     const [localCart, setLocalCart] = useState(cart);
 
@@ -35,6 +40,19 @@ const Cart = () => {
         }
     };
 
+    const handleRemoveItem = async (itemId) => {
+        setLocalCart((prevLocalCart) => ({
+            ...prevLocalCart,
+            items: prevLocalCart.items.filter((item) => item.id != itemId),
+        }));
+
+        try {
+            await deleteCartItems(itemId);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     if (loading) return <p>Loading ....</p>;
     if (!localCart) return <p>No Cart Found</p>;
 
@@ -45,6 +63,7 @@ const Cart = () => {
                     <CartItemList
                         items={localCart.items}
                         handleUpdateQuantity={handleUpdateQuantity}
+                        handleRemoveItem={handleRemoveItem}
                     />
                 </Suspense>
             </div>
