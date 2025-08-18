@@ -31,6 +31,10 @@ const Cart = () => {
             items: prevLocalCart.items.map((item) =>
                 item.id == itemId ? { ...item, quantity: newQuantity } : item
             ),
+            total_price: prevLocalCart.items.reduce(
+                (sum, item) => sum + item.total_price,
+                0
+            ),
         }));
 
         try {
@@ -70,7 +74,10 @@ const Cart = () => {
                     </Suspense>
                 </div>
                 <div>
-                    <CartSummary />
+                    <CartSummary
+                        totalPrice={localCart.total_price}
+                        itemCount={localCart.items.length}
+                    />
                 </div>
             </div>
         </div>

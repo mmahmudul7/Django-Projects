@@ -1,4 +1,8 @@
-const CartSummary = () => {
+const CartSummary = ({ totalPrice, itemCount }) => {
+    const shipping = parseFloat(totalPrice) > 100 ? 0 : 10;
+    const tax = parseFloat(totalPrice) * 0.1;
+    const orderTotal = parseFloat(totalPrice) + shipping + tax;
+
     return (
         <div className="card bg-base-100 shadow-2xl">
             <div className="card-body">
@@ -6,24 +10,29 @@ const CartSummary = () => {
 
                 <div className="space-y-2">
                     <div className="flex justify-between">
-                        <span className="text-gray-500">Subtotal 10 Items</span>
+                        <span className="text-gray-500">
+                            Subtotal {itemCount} Items
+                        </span>
+                        <span>${totalPrice.toFixed(2)}</span>
                     </div>
                 </div>
 
                 <div className="flex justify-between">
                     <span className="text-gray-500">Shipping</span>
-                    <span>100</span>
+                    <span>
+                        {shipping == 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+                    </span>
                 </div>
 
                 <div className="flex justify-between">
                     <span className="text-gray-500">Estimated Tax</span>
-                    <span>12</span>
+                    <span>${tax.toFixed(2)}</span>
                 </div>
 
                 <div className="border-t border-gray-200 pt-2 mt-2">
                     <div className="flex justify-between font-medium">
                         <span>Order Total</span>
-                        <span>120</span>
+                        <span>${orderTotal.toFixed(2)}</span>
                     </div>
                 </div>
 
