@@ -1,5 +1,5 @@
 const CartSummary = ({ totalPrice, itemCount }) => {
-    const shipping = parseFloat(totalPrice) > 100 ? 0 : 10;
+    const shipping = itemCount == 0 || parseFloat(totalPrice) > 100 ? 0 : 10;
     const tax = parseFloat(totalPrice) * 0.1;
     const orderTotal = parseFloat(totalPrice) + shipping + tax;
 
@@ -20,7 +20,7 @@ const CartSummary = ({ totalPrice, itemCount }) => {
                 <div className="flex justify-between">
                     <span className="text-gray-500">Shipping</span>
                     <span>
-                        {shipping == 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+                        {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
                     </span>
                 </div>
 

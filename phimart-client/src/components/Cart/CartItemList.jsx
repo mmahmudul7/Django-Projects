@@ -76,7 +76,7 @@ const CartItemList = ({ items, handleUpdateQuantity, handleRemoveItem }) => {
                                     </div>
                                 </td>
                                 <td className="text-right font-medium">
-                                    ${item.total_price}
+                                    ${item.total_price.toFixed(2)}
                                 </td>
                                 <td>
                                     <button

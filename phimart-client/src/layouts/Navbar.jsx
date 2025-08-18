@@ -1,8 +1,10 @@
 import { Link } from 'react-router';
 import useAuthContext from '../hooks/useAuthContext';
+import useCartContext from '../hooks/useCartContext';
 
 const Navbar = () => {
     const { user, logoutUser } = useAuthContext();
+    const { cart } = useCartContext();
 
     return (
         <div className="navbar bg-base-100 shadow-sm">
@@ -106,7 +108,7 @@ const Navbar = () => {
                                         />{' '}
                                     </svg>
                                     <span className="badge badge-sm indicator-item">
-                                        8
+                                        {cart?.items?.length || 0}
                                     </span>
                                 </div>
                             </div>
@@ -116,15 +118,17 @@ const Navbar = () => {
                             >
                                 <div className="card-body">
                                     <span className="text-lg font-bold">
-                                        8 Items
+                                        {cart?.items?.length || 0} Items
                                     </span>
                                     <span className="text-info">
-                                        Subtotal: $999
+                                        Subtotal: ${cart?.total_price || 0}
                                     </span>
                                     <div className="card-actions">
-                                        <button className="btn btn-primary btn-block">
-                                            View cart
-                                        </button>
+                                        <Link to="dashboard/cart">
+                                            <button className="btn btn-primary btn-block">
+                                                View cart
+                                            </button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
