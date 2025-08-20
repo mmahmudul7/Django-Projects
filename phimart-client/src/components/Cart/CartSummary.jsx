@@ -1,7 +1,31 @@
-const CartSummary = ({ totalPrice, itemCount }) => {
+import authApiClient from '../../services/auth-api-client';
+
+const CartSummary = ({ totalPrice, itemCount, cartId }) => {
     const shipping = itemCount == 0 || parseFloat(totalPrice) > 100 ? 0 : 10;
     const tax = parseFloat(totalPrice) * 0.1;
     const orderTotal = parseFloat(totalPrice) + shipping + tax;
+
+    // const deleteCart = async () => {
+    //     try {
+    //         const response = await authApiClient.delete(`/carts/${cartId}`);
+    //         console.log(response);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
+
+    const createOrder = async () => {
+        try {
+            const order = await authApiClient.post('/orders/', {
+                cart_id: cartId,
+            });
+            if (order.status === 201)
+                // await deleteCart();
+                alert('Order created successfully');
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="card bg-base-100 shadow-2xl">
@@ -37,7 +61,11 @@ const CartSummary = ({ totalPrice, itemCount }) => {
                 </div>
 
                 <div className="card-actions justify-end mt-4">
-                    <button className="btn btn-secondary w-full">
+                    <button
+                        disabled={itemCount === 0}
+                        onClick={createOrder}
+                        className="btn btn-secondary w-full"
+                    >
                         Process to Checkout
                     </button>
                 </div>

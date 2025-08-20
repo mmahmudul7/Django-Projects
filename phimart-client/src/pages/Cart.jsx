@@ -6,6 +6,7 @@ import CartSummary from '../components/Cart/CartSummary';
 const Cart = () => {
     const {
         cart,
+        cartId,
         loading,
         createOrGetCart,
         updateCartItemQuantity,
@@ -97,6 +98,7 @@ const Cart = () => {
                     <CartSummary
                         totalPrice={localCart.total_price}
                         itemCount={localCart.items.length}
+                        cartId={cartId}
                     />
                 </div>
             </div>
