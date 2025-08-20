@@ -2,6 +2,7 @@ import {
     FiBarChart2,
     FiPackage,
     FiPlusCircle,
+    FiShoppingBag,
     FiShoppingCart,
     FiStar,
     FiTag,
@@ -20,7 +21,8 @@ const Sidebar = () => {
         },
         { to: '/categories', icon: FiTag, label: 'Categories' },
         { to: '/categories/add', icon: FiPlusCircle, label: 'Add Category' },
-        { to: '/dashboard/orders', icon: FiShoppingCart, label: 'Orders' },
+        { to: '/dashboard/cart', icon: FiShoppingCart, label: 'Cart' },
+        { to: '/dashboard/orders', icon: FiShoppingBag, label: 'Orders' },
         { to: '/reviews', icon: FiStar, label: 'Reviews' },
         { to: '/users', icon: FiUsers, label: 'Users' },
     ];
