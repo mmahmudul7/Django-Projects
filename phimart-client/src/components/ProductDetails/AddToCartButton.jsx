@@ -48,6 +48,12 @@ const AddToCartButton = ({ product }) => {
                     value={quantity}
                     min={1}
                     max={product.stock}
+                    onChange={(e) => {
+                        const value = Number(e.target.value);
+                        if (value >= 1 && value <= product.stock) {
+                            setQuantity(value);
+                        }
+                    }}
                     className="input inut-bordered join-item w-16 text-center [appearance:textfield] [&::-webkit-inner-spain-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
                 <button
