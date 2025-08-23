@@ -37,17 +37,6 @@ const OrderCard = ({ order, onCancel }) => {
                 </div>
                 <div className="flex gap-2">
                     {user.is_staff ? (
-                        // <select
-                        //     value={status}
-                        //     onChange={handleStatusChange}
-                        //     className="px-3 py-1 rounded-full text-white text-sm font-medium bg-blue-500"
-                        // >
-                        //     <option value="Not Paid">Not Paid</option>
-                        //     <option value="Ready To Ship">Ready To Ship</option>
-                        //     <option value="Shipped">Shipped</option>
-                        //     <option value="Delivered">Delivered</option>
-                        //     <option value="Canceled">Canceled</option>
-                        // </select>
                         <select
                             value={status}
                             onChange={handleStatusChange}
