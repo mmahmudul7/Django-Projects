@@ -102,22 +102,27 @@ class OrderViewSet(ModelViewSet):
 
 @api_view(['POST'])
 def initiate_payment(request):
+    print(request.data)
+
     user = request.user
     amount = request.data.get("amount")
     order_id = request.data.get("orderId")
     num_items = request.data.get("numItems")
+
+    print("User", user)
 
     settings = { 'store_id': 'onesi68a9f7161c754', 'store_pass': 'onesi68a9f7161c754@ssl', 'issandbox': True }
     sslcz = SSLCOMMERZ(settings)
     post_body = {}
     post_body['total_amount'] = amount
     post_body['currency'] = "BDT"
-    post_body['tran_id'] = "txn_{order_id}"
+    post_body['tran_id'] = f"txn_{order_id}"
     post_body['success_url'] = "http://localhost:5173/dashboard/payment/success/"
     post_body['fail_url'] = "http://localhost:5173/dashboard/payment/fail/"
     post_body['cancel_url'] = "http://localhost:5173/dashboard/orders/"
     post_body['emi_option'] = 0
-    post_body['cus_name'] = user.user.get_full_name()
+    # post_body['cus_name'] = f"{user.first_name} {user.last_name}"
+    post_body['cus_name'] = user.get_full_name()
     post_body['cus_email'] = user.email
     post_body['cus_phone'] = user.phone_number
     post_body['cus_add1'] = user.address
@@ -132,7 +137,8 @@ def initiate_payment(request):
 
 
     response = sslcz.createSession(post_body) # API response
+    print(response)
     
     if response.get("status") == 'SUCCESS':
-        return Response({"payment_url": response(['GatewayPageURL'])})
+        return Response({"payment_url": response['GatewayPageURL']})
     return Response({"error": "Payment initiation failed"}, status=status.HTTP_400_BAD_REQUEST)
