@@ -115,8 +115,8 @@ def initiate_payment(request):
     post_body['currency'] = "BDT"
     post_body['tran_id'] = f"txn_{order_id}"
     post_body['success_url'] = f"{main_settings.BACKEND_URL}/api/v1/payment/success/"
-    post_body['fail_url'] = f"{main_settings.BACKEND_URL}/dashboard/payment/fail/"
-    post_body['cancel_url'] = f"{main_settings.BACKEND_URL}/dashboard/orders/"
+    post_body['fail_url'] = f"{main_settings.BACKEND_URL}/api/v1/payment/fail/"
+    post_body['cancel_url'] = f"{main_settings.BACKEND_URL}/api/v1/payment/cancel/"
     post_body['emi_option'] = 0
     post_body['cus_name'] = user.get_full_name()
     post_body['cus_email'] = user.email
@@ -144,4 +144,15 @@ def payment_success(request):
     order_id = request.data.get("tran_id").split('_')[1]
     order = Order.objects.get(id=order_id)
     order.status = "Ready To Ship"
-    return redirect(f"{main_settings.FRONTEND_URL}/dashboard/payment/success/")
+    order.save()
+    return redirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
+
+
+@api_view(['POST'])
+def payment_fail(request):
+    return redirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
+
+
+@api_view(['POST'])
+def payment_cancel(request):
+    return redirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
