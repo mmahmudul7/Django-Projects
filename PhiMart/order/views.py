@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
 from order.models import Cart, CartItem, Order
@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from sslcommerz_lib import SSLCOMMERZ
+from django.conf import settings as main_settings
 
 
 class CartViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
@@ -102,14 +103,10 @@ class OrderViewSet(ModelViewSet):
 
 @api_view(['POST'])
 def initiate_payment(request):
-    print(request.data)
-
     user = request.user
     amount = request.data.get("amount")
     order_id = request.data.get("orderId")
     num_items = request.data.get("numItems")
-
-    print("User", user)
 
     settings = { 'store_id': 'onesi68a9f7161c754', 'store_pass': 'onesi68a9f7161c754@ssl', 'issandbox': True }
     sslcz = SSLCOMMERZ(settings)
@@ -117,11 +114,10 @@ def initiate_payment(request):
     post_body['total_amount'] = amount
     post_body['currency'] = "BDT"
     post_body['tran_id'] = f"txn_{order_id}"
-    post_body['success_url'] = "http://localhost:5173/dashboard/payment/success/"
-    post_body['fail_url'] = "http://localhost:5173/dashboard/payment/fail/"
-    post_body['cancel_url'] = "http://localhost:5173/dashboard/orders/"
+    post_body['success_url'] = f"{main_settings.BACKEND_URL}/api/v1/payment/success/"
+    post_body['fail_url'] = f"{main_settings.BACKEND_URL}/dashboard/payment/fail/"
+    post_body['cancel_url'] = f"{main_settings.BACKEND_URL}/dashboard/orders/"
     post_body['emi_option'] = 0
-    # post_body['cus_name'] = f"{user.first_name} {user.last_name}"
     post_body['cus_name'] = user.get_full_name()
     post_body['cus_email'] = user.email
     post_body['cus_phone'] = user.phone_number
@@ -137,8 +133,15 @@ def initiate_payment(request):
 
 
     response = sslcz.createSession(post_body) # API response
-    print(response)
     
     if response.get("status") == 'SUCCESS':
         return Response({"payment_url": response['GatewayPageURL']})
     return Response({"error": "Payment initiation failed"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def payment_success(request):
+    order_id = request.data.get("tran_id").split('_')[1]
+    order = Order.objects.get(id=order_id)
+    order.status = "Ready To Ship"
+    return redirect(f"{main_settings.FRONTEND_URL}/dashboard/payment/success/")
