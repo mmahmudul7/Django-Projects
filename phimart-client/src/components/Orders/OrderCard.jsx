@@ -7,6 +7,7 @@ import authApiClient from '../../services/auth-api-client';
 const OrderCard = ({ order, onCancel }) => {
     const { user } = useAuthContext();
     const [status, setStatus] = useState(order.status);
+    const [loading, setLoading] = useState(false);
 
     const handleStatusChange = async (event) => {
         const newStatus = event.target.value;
@@ -27,13 +28,21 @@ const OrderCard = ({ order, onCancel }) => {
     };
 
     const handlePayment = async () => {
+        setLoading(true);
+
         try {
             const response = await authApiClient.post('/payment/initiate/', {
                 amount: order.total_price,
                 orderId: order.id,
                 numItems: order.items?.length,
             });
-            console.log(response);
+
+            if (response.data.payment_url) {
+                setLoading(false);
+                window.location.href = response.data.payment_url;
+            } else {
+                alert('Payment failed');
+            }
         } catch (error) {
             console.log(error);
         }
@@ -121,7 +130,7 @@ const OrderCard = ({ order, onCancel }) => {
                         className="mt-4 btn btn-secondary hover:bg-pink-600 text-white rounded-lg transition-colors"
                         onClick={handlePayment}
                     >
-                        Pay Now
+                        {loading ? 'Processing ...' : 'Pay Now'}
                     </button>
                 )}
             </div>
