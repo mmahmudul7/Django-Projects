@@ -14,6 +14,7 @@ import ProductDetail from '../pages/ProductDetail';
 import Cart from '../pages/Cart';
 import Orders from '../pages/Orders';
 import PaymentSuccess from '../pages/PaymentSuccess';
+import Practice from '../pages/Practice';
 
 const AppRoutes = () => {
     return (
@@ -26,6 +27,7 @@ const AppRoutes = () => {
                 <Route path="shop" element={<Shop />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
+                <Route path="practice" element={<Practice />} />
                 <Route
                     path="activate/:uid/:token"
                     element={<ActivateAccount />}
